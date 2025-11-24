@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * 五子棋游戏（双人对战版）- 右侧添加悔棋按钮
@@ -112,6 +115,23 @@ public class GobangGame extends JFrame {
         undoItem.addActionListener(e -> undoBtn.doClick()); // 菜单悔棋与按钮联动
         restartItem.addActionListener(e -> restartBtn.doClick()); // 菜单重启与按钮联动
         closeItem.addActionListener(e -> closeBtn.doClick());
+        settingItem.addActionListener(e -> {
+        	JOptionPane.showMessageDialog(null, "设置还未完工！功能不齐全！", "设置还未完工！",JOptionPane.ERROR_MESSAGE);
+        	JFrame settingsWindow = new JFrame("选项");
+        	Font font = new Font("宋体", Font.PLAIN, 14);
+        	settingsWindow.setSize(500,500);
+        	JPanel settingPanel = new JPanel();
+        	settingsWindow.add(settingPanel);
+        	JLabel languageSetting = new JLabel("语言设置");
+        	languageSetting.setFont(font);
+        	settingPanel.add(languageSetting);
+        	String[] languageOptions = {"中文（简体）"};
+        	final JComboBox<String> lo = new JComboBox<String>(languageOptions);
+        	settingPanel.add(lo);
+        	settingsWindow.setLocationRelativeTo(null);
+        	settingsWindow.setVisible(true);
+        	
+        });
         aboutItem.addActionListener(e -> {
         	JFrame aboutWindow = new JFrame("关于软件");
         	Font font = new Font("宋体", Font.PLAIN, 14);
@@ -125,7 +145,7 @@ public class GobangGame extends JFrame {
         	JLabel label = new JLabel("<html><div style='text-align: center; font-family: Arial; font-size: 14px; line-height: 1.5;'>"
         	    + "GoBangGame v1.0<br>"
         	    + "2025-11-21<br>"
-        	    + "版权所有 (C) 2025 邱翰如<br>"
+        	    + "版权所有 (C) 2025 Eric<br>"
         	    + "GoBangGame是免费软件。"
         	    + "</div></html>", JLabel.CENTER);
         	label.setFont(font);
@@ -156,7 +176,18 @@ public class GobangGame extends JFrame {
         	JButton websiteBtn = new JButton("官网");
         	websiteBtn.setPreferredSize(new Dimension(100, 35));
         	websiteBtn.addActionListener(f -> {
-        		JOptionPane.showMessageDialog(null, "敬请期待!","敬请期待!", JOptionPane.INFORMATION_MESSAGE);
+        		//JOptionPane.showMessageDialog(null, "敬请期待!","敬请期待!", JOptionPane.INFORMATION_MESSAGE);
+        		if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+        			try {
+						Desktop.getDesktop().browse(new URI("https://qiuerichanru.work.gd"));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        		}
         	});
 
         	licenceBtn.setFont(font);
