@@ -125,8 +125,16 @@ public class GobangGame extends JFrame {
         	JLabel languageSetting = new JLabel("语言设置");
         	languageSetting.setFont(font);
         	settingPanel.add(languageSetting);
-        	String[] languageOptions = {"中文（简体）"};
+        	String[] languageOptions = {"中文（简体）","中文（繁体）","English (US)"};
         	final JComboBox<String> lo = new JComboBox<String>(languageOptions);
+        	lo.addActionListener(f -> {
+        		if (f.getSource() == lo) {
+        			if(!(lo.getSelectedItem() == languageOptions[0])) {
+        				JOptionPane.showMessageDialog(null, "Other languages are not supported yet!","Error!",JOptionPane.ERROR_MESSAGE);
+        				lo.setSelectedItem(languageOptions[0]);
+        			}
+        		}
+        	});
         	settingPanel.add(lo);
         	settingsWindow.setLocationRelativeTo(null);
         	settingsWindow.setVisible(true);
