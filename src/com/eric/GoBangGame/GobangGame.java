@@ -6,16 +6,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ResourceBundle;
+import java.util.Locale;
 
 /**
- * 五子棋游戏（双人对战版）- 右侧添加悔棋按钮
- * 功能：棋盘绘制、落子、胜负判定、悔棋、重新开始
+ * 五子棋游戏（双人对战版）- 支持多语言
+ * 功能：棋盘绘制、落子、胜负判定、悔棋、重新开始、多语言支持
  */
 public class GobangGame extends JFrame {
     // 棋盘相关配置
@@ -32,9 +35,22 @@ public class GobangGame extends JFrame {
     private boolean gameOver = false; // 游戏是否结束
     private List<int[]> moveHistory = new ArrayList<>(); // 落子历史（用于悔棋）
 
+    // 多语言支持
+    private ResourceBundle messages;
+    private Locale currentLocale;
+    private JComboBox<String> languageComboBox;
+
+    // UI组件引用
+    private JButton undoBtn, restartBtn, closeBtn;
+    private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
+    private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
+
     // 构造方法：初始化游戏窗口（棋盘+右侧按钮）
     public GobangGame() {
-        setTitle("Java 五子棋游戏");
+        // 初始化语言（默认简体中文）
+        setLanguage(new Locale("zh", "CN"));
+        
+        setTitle(messages.getString("game.title"));
         // 窗口大小 = 棋盘宽度 + 按钮宽度 + 边距，高度与棋盘一致
         int windowWidth = MARGIN * 2 + COL * CELL_SIZE + BUTTON_WIDTH + 40;
         int windowHeight = MARGIN * 2 + ROW * CELL_SIZE;
@@ -57,11 +73,11 @@ public class GobangGame extends JFrame {
         buttonPanel.setPreferredSize(new Dimension(BUTTON_WIDTH, windowHeight)); // 固定按钮面板宽度
 
         // 4. 创建悔棋按钮
-        JButton undoBtn = new JButton("悔棋");
+        this.undoBtn = new JButton(messages.getString("button.undo"));
         undoBtn.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         undoBtn.setFont(new Font("宋体", Font.PLAIN, 14));
         
-        JButton closeBtn = new JButton("退出");
+        this.closeBtn = new JButton(messages.getString("button.exit"));
         closeBtn.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         closeBtn.setFont(new Font("宋体", Font.PLAIN, 14));
         
@@ -70,7 +86,7 @@ public class GobangGame extends JFrame {
         undoBtn.addActionListener(e -> {
             if (gameOver || moveHistory.isEmpty()) {
                 JOptionPane.showMessageDialog(GobangGame.this, 
-                    gameOver ? "游戏已结束，无法悔棋！" : "暂无落子，无法悔棋！");
+                    gameOver ? messages.getString("message.cannot_undo_game_over") : messages.getString("message.cannot_undo_no_moves"));
                 return;
             }
             // 撤销最后一步落子
@@ -83,7 +99,7 @@ public class GobangGame extends JFrame {
         });
 
         // 5. 创建重新开始按钮（保留原功能，与悔棋按钮并列）
-        JButton restartBtn = new JButton("重新开始游戏");
+        this.restartBtn = new JButton(messages.getString("button.restart"));
         restartBtn.setPreferredSize(new Dimension(120, 40));
         restartBtn.setFont(new Font("宋体", Font.PLAIN, 14));
         restartBtn.addActionListener(e -> {
@@ -106,28 +122,33 @@ public class GobangGame extends JFrame {
 
         // 添加菜单（保留原菜单功能，兼容两种操作方式）
         JMenuBar menuBar = new JMenuBar();
-        JMenu gameMenu = new JMenu("游戏");
-        JMenu fileMenu = new JMenu("文件");
-        JMenu toolsMenu = new JMenu("工具");
-        JMenu aboutMenu = new JMenu("关于");
-        JMenuItem undoItem = new JMenuItem("悔棋");
-        JMenuItem restartItem = new JMenuItem("重新开始");
-        JMenuItem closeItem = new JMenuItem("退出");
-        JMenuItem settingItem = new JMenuItem("选项");
-        JMenuItem saveItem = new JMenuItem("保存");
-        JMenuItem openItem = new JMenuItem("打开");
-        JMenuItem aboutItem = new JMenuItem("关于软件");
+        this.fileMenu = new JMenu(messages.getString("menu.file"));
+        this.gameMenu = new JMenu(messages.getString("menu.game"));
+        this.toolsMenu = new JMenu(messages.getString("menu.tools"));
+        this.aboutMenu = new JMenu(messages.getString("menu.about"));
+        
+        this.undoItem = new JMenuItem(messages.getString("menu.undo"));
+        this.restartItem = new JMenuItem(messages.getString("menu.restart"));
+        this.closeItem = new JMenuItem(messages.getString("menu.exit"));
+        this.settingItem = new JMenuItem(messages.getString("menu.settings"));
+        this.saveItem = new JMenuItem(messages.getString("menu.save"));
+        this.openItem = new JMenuItem(messages.getString("menu.open"));
+        this.aboutItem = new JMenuItem(messages.getString("menu.about_software"));
+        
         undoItem.addActionListener(e -> undoBtn.doClick()); // 菜单悔棋与按钮联动
         restartItem.addActionListener(e -> restartBtn.doClick()); // 菜单重启与按钮联动
         closeItem.addActionListener(e -> closeBtn.doClick());
         saveItem.addActionListener(e -> {
             if (moveHistory.isEmpty()) {
-                JOptionPane.showMessageDialog(GobangGame.this, "没有游戏进度可保存！", "提示", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(GobangGame.this, 
+                    messages.getString("message.no_game_to_save"), 
+                    messages.getString("message.title.tip"), 
+                    JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("保存游戏");
+            fileChooser.setDialogTitle(messages.getString("dialog.save_game"));
             fileChooser.setSelectedFile(new File("gobang_save.dat"));
             
             int userSelection = fileChooser.showSaveDialog(GobangGame.this);
@@ -142,8 +163,9 @@ public class GobangGame extends JFrame {
 
         openItem.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("打开游戏存档");
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("五子棋存档 (*.dat)", "dat"));
+            fileChooser.setDialogTitle(messages.getString("dialog.open_game"));
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                messages.getString("filter.game_files"), "dat"));
             
             int userSelection = fileChooser.showOpenDialog(GobangGame.this);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
@@ -153,8 +175,8 @@ public class GobangGame extends JFrame {
                     if (!moveHistory.isEmpty()) {
                         int result = JOptionPane.showConfirmDialog(
                             GobangGame.this, 
-                            "加载新游戏将丢失当前进度，是否继续？", 
-                            "确认加载", 
+                            messages.getString("message.confirm_load"), 
+                            messages.getString("message.title.confirm"), 
                             JOptionPane.YES_NO_OPTION
                         );
                         if (result != JOptionPane.YES_OPTION) {
@@ -163,107 +185,22 @@ public class GobangGame extends JFrame {
                     }
                     loadGame(fileToOpen);
                 } else {
-                    JOptionPane.showMessageDialog(GobangGame.this, "无法读取文件！", "错误", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(GobangGame.this, 
+                        messages.getString("message.cannot_read_file"), 
+                        messages.getString("message.title.error"), 
+                        JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        
         settingItem.addActionListener(e -> {
-        	JOptionPane.showMessageDialog(null, "设置还未完工！功能不齐全！", "设置还未完工！",JOptionPane.ERROR_MESSAGE);
-        	JFrame settingsWindow = new JFrame("选项");
-        	Font font = new Font("宋体", Font.PLAIN, 14);
-        	settingsWindow.setSize(500,500);
-        	JPanel settingPanel = new JPanel();
-        	settingsWindow.add(settingPanel);
-        	JLabel languageSetting = new JLabel("语言设置");
-        	languageSetting.setFont(font);
-        	settingPanel.add(languageSetting);
-        	String[] languageOptions = {"中文（简体）","中文（繁体）","English (US)"};
-        	final JComboBox<String> lo = new JComboBox<String>(languageOptions);
-        	lo.addActionListener(f -> {
-        		if (f.getSource() == lo) {
-        			if(!(lo.getSelectedItem() == languageOptions[0])) {
-        				JOptionPane.showMessageDialog(null, "Other languages are not supported yet!","Error!",JOptionPane.ERROR_MESSAGE);
-        				lo.setSelectedItem(languageOptions[0]);
-        			}
-        		}
-        	});
-        	settingPanel.add(lo);
-        	settingsWindow.setLocationRelativeTo(null);
-        	settingsWindow.setVisible(true);
-        	
+            showSettingsDialog();
         });
+        
         aboutItem.addActionListener(e -> {
-        	JFrame aboutWindow = new JFrame("关于软件");
-        	Font font = new Font("宋体", Font.PLAIN, 14);
-        	aboutWindow.setResizable(false);
-        	aboutWindow.setLocationRelativeTo(null);
-        	aboutWindow.setSize(300, 300);
-        	// Use BorderLayout with proper spacing
-        	aboutWindow.setLayout(new BorderLayout());
-
-        	JLabel label = new JLabel("<html><div style='text-align: center; font-family: Arial; font-size: 14px; line-height: 1.5;'>"
-        	    + "GoBangGame v1.0<br>"
-        	    + "2025-11-21<br>"
-        	    + "版权所有 (C) 2025 Eric<br>"
-        	    + "GoBangGame是免费软件。"
-        	    + "</div></html>", JLabel.CENTER);
-        	label.setFont(font);
-
-        	JButton licenceBtn = new JButton("许可证");
-        	licenceBtn.setPreferredSize(new Dimension(100, 35));
-        	licenceBtn.addActionListener(f -> {
-        	    JFrame licenceWindow = new JFrame("许可证");
-        	    licenceWindow.setResizable(false);
-        	    licenceWindow.setLocationRelativeTo(null);
-        	    
-        	    JTextArea licenceText = new JTextArea();
-        	    licenceText.setText("MIT Licence\n\n" +
-        	        "Copyright 2025 邱翰如\n\n" +
-        	        "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n" +
-        	        "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n" +
-        	        "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
-        	    licenceText.setEditable(false);
-        	    licenceText.setLineWrap(true);
-        	    licenceText.setWrapStyleWord(true);
-        	    licenceText.setFont(font);
-        	    licenceText.setMargin(new Insets(15, 15, 15, 15));
-        	    
-        	    licenceWindow.setSize(500, 600);
-        	    licenceWindow.add(new JScrollPane(licenceText));
-        	    licenceWindow.setVisible(true);
-        	});
-        	JButton websiteBtn = new JButton("官网");
-        	websiteBtn.setPreferredSize(new Dimension(100, 35));
-        	websiteBtn.addActionListener(f -> {
-        		//JOptionPane.showMessageDialog(null, "敬请期待!","敬请期待!", JOptionPane.INFORMATION_MESSAGE);
-        		if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-        			try {
-						Desktop.getDesktop().browse(new URI("https://qiuerichanru.work.gd"));
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-        		}
-        	});
-
-        	licenceBtn.setFont(font);
-        	websiteBtn.setFont(font);
-
-        	// Create a panel for the button with proper padding
-        	JPanel buttonPanelLicence = new JPanel(new FlowLayout());
-        	buttonPanelLicence.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); // Add padding
-        	buttonPanelLicence.add(licenceBtn);
-        	buttonPanelLicence.add(websiteBtn);
-
-        	// Add components with proper positioning
-        	aboutWindow.add(label, BorderLayout.CENTER);      // Text in center
-        	aboutWindow.add(buttonPanelLicence, BorderLayout.SOUTH); // Button at bottom with padding
-
-        	aboutWindow.setVisible(true);
+            showAboutDialog();
         });
+        
         toolsMenu.add(settingItem);
         fileMenu.add(openItem);
         fileMenu.add(saveItem);
@@ -276,6 +213,215 @@ public class GobangGame extends JFrame {
         menuBar.add(toolsMenu);
         menuBar.add(aboutMenu);
         setJMenuBar(menuBar);
+    }
+
+    private void setLanguage(Locale locale) {
+        this.currentLocale = locale;
+        try {
+            System.out.println("Attempting to load resource bundle for: " + locale);
+            this.messages = ResourceBundle.getBundle("messages", locale);
+            System.out.println("Successfully loaded resource bundle for: " + locale);
+            System.out.println("Current locale after loading: " + messages.getLocale());
+            
+        } catch (Exception e) {
+            System.err.println("Error loading resource bundle for locale: " + locale);
+            e.printStackTrace();
+            try {
+                System.out.println("Falling back to English...");
+                this.messages = ResourceBundle.getBundle("messages", Locale.ENGLISH);
+                this.currentLocale = Locale.ENGLISH;
+                System.out.println("Fell back to: " + this.messages.getLocale());
+            } catch (Exception ex) {
+                System.err.println("Could not load any resource bundle!");
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 更新界面语言 - 直接更新所有存储的组件引用
+     */
+    private void updateUILanguage() {
+        setTitle(messages.getString("game.title"));
+        
+        // 更新按钮
+        if (undoBtn != null) undoBtn.setText(messages.getString("button.undo"));
+        if (restartBtn != null) restartBtn.setText(messages.getString("button.restart"));
+        if (closeBtn != null) closeBtn.setText(messages.getString("button.exit"));
+        
+        // 更新菜单
+        if (fileMenu != null) fileMenu.setText(messages.getString("menu.file"));
+        if (gameMenu != null) gameMenu.setText(messages.getString("menu.game"));
+        if (toolsMenu != null) toolsMenu.setText(messages.getString("menu.tools"));
+        if (aboutMenu != null) aboutMenu.setText(messages.getString("menu.about"));
+        
+        // 更新菜单项
+        if (openItem != null) openItem.setText(messages.getString("menu.open"));
+        if (saveItem != null) saveItem.setText(messages.getString("menu.save"));
+        if (closeItem != null) closeItem.setText(messages.getString("menu.exit"));
+        if (undoItem != null) undoItem.setText(messages.getString("menu.undo"));
+        if (restartItem != null) restartItem.setText(messages.getString("menu.restart"));
+        if (settingItem != null) settingItem.setText(messages.getString("menu.settings"));
+        if (aboutItem != null) aboutItem.setText(messages.getString("menu.about_software"));
+        
+        // 刷新界面
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * 显示设置对话框
+     */
+    private void showSettingsDialog() {
+        JFrame settingsWindow = new JFrame(messages.getString("dialog.settings"));
+        Font font = new Font("Microsoft YaHei", Font.PLAIN, 14);
+        settingsWindow.setSize(400, 200);
+        settingsWindow.setLocationRelativeTo(null);
+        settingsWindow.setResizable(false);
+        
+        JPanel settingPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        settingPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel languageSetting = new JLabel(messages.getString("settings.language"));
+        languageSetting.setFont(font);
+        settingPanel.add(languageSetting);
+        
+        String[] languageOptions = {
+            messages.getString("language.chinese_simple"),
+            messages.getString("language.chinese_traditional"), 
+            messages.getString("language.english")
+        };
+        
+        languageComboBox = new JComboBox<>(languageOptions);
+        languageComboBox.setFont(font);
+        
+        // 设置当前选中的语言
+        if (currentLocale.getLanguage().equals("zh")) {
+            if (currentLocale.getCountry().equals("CN")) {
+                languageComboBox.setSelectedIndex(0);
+            } else {
+                languageComboBox.setSelectedIndex(1);
+            }
+        } else {
+            languageComboBox.setSelectedIndex(2);
+        }
+        
+        languageComboBox.addActionListener(f -> {
+            int selectedIndex = languageComboBox.getSelectedIndex();
+            Locale newLocale;
+            switch (selectedIndex) {
+                case 0:
+                    newLocale = new Locale("zh", "CN");
+                    break;
+                case 1:
+                    newLocale = new Locale("zh", "TW");
+                    break;
+                case 2:
+                    newLocale = new Locale("en", "US");
+                    break;
+                default:
+                    newLocale = new Locale("zh", "CN");
+            }
+            
+            setLanguage(newLocale);
+            updateUILanguage();
+            
+            // Safe message display
+            String message;
+            try {
+                message = messages.getString("message.language_changed");
+            } catch (java.util.MissingResourceException e) {
+                message = "Language changed successfully!";
+            }
+            
+            JOptionPane.showMessageDialog(settingsWindow, 
+                message,
+                messages.getString("message.title.info"),
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        
+        settingPanel.add(languageComboBox);
+        
+        // 占位符
+        settingPanel.add(new JLabel());
+        settingPanel.add(new JLabel());
+        
+        settingsWindow.add(settingPanel);
+        settingsWindow.setVisible(true);
+    }
+
+    /**
+     * 显示关于对话框
+     */
+    private void showAboutDialog() {
+        JFrame aboutWindow = new JFrame(messages.getString("dialog.about"));
+        Font font = new Font("宋体", Font.PLAIN, 14);
+        aboutWindow.setResizable(false);
+        aboutWindow.setLocationRelativeTo(null);
+        aboutWindow.setSize(300, 300);
+        aboutWindow.setLayout(new BorderLayout());
+
+        JLabel label = new JLabel("<html><div style='text-align: center; font-family: Arial; font-size: 14px; line-height: 1.5;'>"
+            + messages.getString("about.version") + "<br>"
+            + messages.getString("about.date") + "<br>"
+            + messages.getString("about.copyright") + "<br>"
+            + messages.getString("about.description")
+            + "</div></html>", JLabel.CENTER);
+        label.setFont(font);
+
+        JButton licenceBtn = new JButton(messages.getString("button.license"));
+        licenceBtn.setPreferredSize(new Dimension(100, 35));
+        licenceBtn.addActionListener(f -> {
+            showLicenseDialog();
+        });
+        
+        JButton websiteBtn = new JButton(messages.getString("button.website"));
+        websiteBtn.setPreferredSize(new Dimension(100, 35));
+        websiteBtn.addActionListener(f -> {
+            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://qiuerichanru.work.gd"));
+                } catch (IOException | URISyntaxException e1) {
+                    JOptionPane.showMessageDialog(null, 
+                        messages.getString("message.browser_error"),
+                        messages.getString("message.title.error"),
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        licenceBtn.setFont(font);
+        websiteBtn.setFont(font);
+
+        JPanel buttonPanelLicence = new JPanel(new FlowLayout());
+        buttonPanelLicence.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        buttonPanelLicence.add(licenceBtn);
+        buttonPanelLicence.add(websiteBtn);
+
+        aboutWindow.add(label, BorderLayout.CENTER);
+        aboutWindow.add(buttonPanelLicence, BorderLayout.SOUTH);
+        aboutWindow.setVisible(true);
+    }
+
+    /**
+     * 显示许可证对话框
+     */
+    private void showLicenseDialog() {
+        JFrame licenceWindow = new JFrame(messages.getString("dialog.license"));
+        licenceWindow.setResizable(false);
+        licenceWindow.setLocationRelativeTo(null);
+        
+        JTextArea licenceText = new JTextArea();
+        licenceText.setText(messages.getString("license.content"));
+        licenceText.setEditable(false);
+        licenceText.setLineWrap(true);
+        licenceText.setWrapStyleWord(true);
+        licenceText.setFont(new Font("宋体", Font.PLAIN, 14));
+        licenceText.setMargin(new Insets(15, 15, 15, 15));
+        
+        licenceWindow.setSize(500, 600);
+        licenceWindow.add(new JScrollPane(licenceText));
+        licenceWindow.setVisible(true);
     }
 
     /**
@@ -362,13 +508,13 @@ public class GobangGame extends JFrame {
 
                         // 检查是否获胜
                         if (checkWin(i, j)) {
-                            String winner = isBlackTurn ? "黑棋" : "白棋";
-                            JOptionPane.showMessageDialog(GobangGame.this, winner + "获胜！");
+                            String winner = isBlackTurn ? messages.getString("game.black") : messages.getString("game.white");
+                            JOptionPane.showMessageDialog(GobangGame.this, winner + messages.getString("game.win"));
                             gameOver = true;
                         }
                         // 检查是否平局（棋盘满了但无人获胜）
                         else if (checkDraw()) {
-                            JOptionPane.showMessageDialog(GobangGame.this, "平局！");
+                            JOptionPane.showMessageDialog(GobangGame.this, messages.getString("game.draw"));
                             gameOver = true;
                         }
 
@@ -437,6 +583,7 @@ public class GobangGame extends JFrame {
             return true;
         }
     }
+
     /**
      * Save current game state to a file
      */
@@ -445,9 +592,15 @@ public class GobangGame extends JFrame {
             // Create a save object containing all game state
             GameSave save = new GameSave(board, isBlackTurn, gameOver, moveHistory);
             oos.writeObject(save);
-            JOptionPane.showMessageDialog(this, "游戏保存成功！", "保存成功", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                messages.getString("message.save_success"), 
+                messages.getString("message.title.success"), 
+                JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "保存失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                messages.getString("message.save_failed") + ex.getMessage(), 
+                messages.getString("message.title.error"), 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -465,9 +618,15 @@ public class GobangGame extends JFrame {
             this.moveHistory = save.getMoveHistory();
             
             repaint(); // Refresh the display
-            JOptionPane.showMessageDialog(this, "游戏加载成功！", "加载成功", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                messages.getString("message.load_success"), 
+                messages.getString("message.title.success"), 
+                JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(this, "加载失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                messages.getString("message.load_failed") + ex.getMessage(), 
+                messages.getString("message.title.error"), 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
