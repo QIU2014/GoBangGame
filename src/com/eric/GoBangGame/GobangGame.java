@@ -1,4 +1,4 @@
-package com.eric.GoBangGame;
+package com.eric.GobangGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * 五子棋游戏（双人对战版）- 右侧添加悔棋按钮
@@ -111,10 +114,59 @@ public class GobangGame extends JFrame {
         JMenuItem restartItem = new JMenuItem("重新开始");
         JMenuItem closeItem = new JMenuItem("退出");
         JMenuItem settingItem = new JMenuItem("选项");
+        JMenuItem saveItem = new JMenuItem("保存");
+        JMenuItem openItem = new JMenuItem("打开");
         JMenuItem aboutItem = new JMenuItem("关于软件");
         undoItem.addActionListener(e -> undoBtn.doClick()); // 菜单悔棋与按钮联动
         restartItem.addActionListener(e -> restartBtn.doClick()); // 菜单重启与按钮联动
         closeItem.addActionListener(e -> closeBtn.doClick());
+        saveItem.addActionListener(e -> {
+            if (moveHistory.isEmpty()) {
+                JOptionPane.showMessageDialog(GobangGame.this, "没有游戏进度可保存！", "提示", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("保存游戏");
+            fileChooser.setSelectedFile(new File("gobang_save.dat"));
+            
+            int userSelection = fileChooser.showSaveDialog(GobangGame.this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                if (!fileToSave.getName().toLowerCase().endsWith(".dat")) {
+                    fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".dat");
+                }
+                saveGame(fileToSave);
+            }
+        });
+
+        openItem.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("打开游戏存档");
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("五子棋存档 (*.dat)", "dat"));
+            
+            int userSelection = fileChooser.showOpenDialog(GobangGame.this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToOpen = fileChooser.getSelectedFile();
+                if (fileToOpen.exists() && fileToOpen.canRead()) {
+                    // Confirm loading if current game has progress
+                    if (!moveHistory.isEmpty()) {
+                        int result = JOptionPane.showConfirmDialog(
+                            GobangGame.this, 
+                            "加载新游戏将丢失当前进度，是否继续？", 
+                            "确认加载", 
+                            JOptionPane.YES_NO_OPTION
+                        );
+                        if (result != JOptionPane.YES_OPTION) {
+                            return;
+                        }
+                    }
+                    loadGame(fileToOpen);
+                } else {
+                    JOptionPane.showMessageDialog(GobangGame.this, "无法读取文件！", "错误", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         settingItem.addActionListener(e -> {
         	JOptionPane.showMessageDialog(null, "设置还未完工！功能不齐全！", "设置还未完工！",JOptionPane.ERROR_MESSAGE);
         	JFrame settingsWindow = new JFrame("选项");
@@ -146,7 +198,6 @@ public class GobangGame extends JFrame {
         	aboutWindow.setResizable(false);
         	aboutWindow.setLocationRelativeTo(null);
         	aboutWindow.setSize(300, 300);
-
         	// Use BorderLayout with proper spacing
         	aboutWindow.setLayout(new BorderLayout());
 
@@ -214,6 +265,8 @@ public class GobangGame extends JFrame {
         	aboutWindow.setVisible(true);
         });
         toolsMenu.add(settingItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
         fileMenu.add(closeItem);
         gameMenu.add(undoItem);
         gameMenu.add(restartItem);
@@ -383,6 +436,73 @@ public class GobangGame extends JFrame {
             }
             return true;
         }
+    }
+    /**
+     * Save current game state to a file
+     */
+    private void saveGame(File file) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            // Create a save object containing all game state
+            GameSave save = new GameSave(board, isBlackTurn, gameOver, moveHistory);
+            oos.writeObject(save);
+            JOptionPane.showMessageDialog(this, "游戏保存成功！", "保存成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "保存失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Load game state from a file
+     */
+    private void loadGame(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            GameSave save = (GameSave) ois.readObject();
+            
+            // Restore game state
+            this.board = save.getBoard();
+            this.isBlackTurn = save.isBlackTurn();
+            this.gameOver = save.isGameOver();
+            this.moveHistory = save.getMoveHistory();
+            
+            repaint(); // Refresh the display
+            JOptionPane.showMessageDialog(this, "游戏加载成功！", "加载成功", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "加载失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Inner class to represent game save data
+     */
+    private static class GameSave implements Serializable {
+        private static final long serialVersionUID = 1L;
+        
+        private int[][] board;
+        private boolean isBlackTurn;
+        private boolean gameOver;
+        private List<int[]> moveHistory;
+        
+        public GameSave(int[][] board, boolean isBlackTurn, boolean gameOver, List<int[]> moveHistory) {
+            this.board = copyBoard(board);
+            this.isBlackTurn = isBlackTurn;
+            this.gameOver = gameOver;
+            this.moveHistory = new ArrayList<>(moveHistory); // Create a copy
+        }
+        
+        // Deep copy of the board
+        private int[][] copyBoard(int[][] original) {
+            int[][] copy = new int[original.length][];
+            for (int i = 0; i < original.length; i++) {
+                copy[i] = original[i].clone();
+            }
+            return copy;
+        }
+        
+        // Getters
+        public int[][] getBoard() { return copyBoard(board); }
+        public boolean isBlackTurn() { return isBlackTurn; }
+        public boolean isGameOver() { return gameOver; }
+        public List<int[]> getMoveHistory() { return new ArrayList<>(moveHistory); }
     }
 
     // 主方法：启动游戏
