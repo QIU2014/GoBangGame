@@ -1,9 +1,14 @@
 # GoBangGame
 A small chinese game written in java
 
-Note that it only supports Chinese
+## Now supports language
+- Chinese (Simplified)
+- Chinese (Traditional)
+- English (US)
+- Korean (~~North Korea~~)
+- Korean (South Korea)
 
-Other language in settings are **not** implemented yet
+## Supports Game saving and Game opening
 
 Windows executable built by **Launch4j**
 
