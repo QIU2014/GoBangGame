@@ -3,6 +3,9 @@ A small chinese game written in java
 
 ## THIS GAME REQUIRES JAVA VERSION 17 AND ABOVE
 
+## Download
+[![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download)
+
 ## Changelog
 
 ### Now supports language
@@ -22,4 +25,5 @@ Workspace & IDE using Eclipse
 ## Building
 Open it using Eclipse IDE for Java
 
-[![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download)
+[![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download) 
+
