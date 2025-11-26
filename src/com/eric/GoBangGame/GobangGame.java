@@ -291,7 +291,8 @@ public class GobangGame extends JFrame {
             messages.getString("language.chinese_traditional"), 
             messages.getString("language.english"),
             messages.getString("language.korean_north_korea"),
-            messages.getString("language.korean_south_korea")
+            messages.getString("language.korean_south_korea"),
+            messages.getString("language.german")
         };
         
         languageComboBox = new JComboBox<>(languageOptions);
@@ -326,6 +327,9 @@ public class GobangGame extends JFrame {
                 	break;
                 case 4:
                 	newLocale = new Locale("ko", "KR");
+                	break;
+                case 5:
+                	newLocale = new Locale("de", "DE");
                 	break;
                 default:
                     newLocale = new Locale("zh", "CN");
