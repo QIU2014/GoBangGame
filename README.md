@@ -21,3 +21,5 @@ Workspace & IDE using Eclipse
 
 ## Building
 Open it using Eclipse IDE for Java
+
+[![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download)
