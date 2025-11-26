@@ -1,6 +1,8 @@
 # GoBangGame
 A small chinese game written in java
 
+## THIS GAME REQUIRES JAVA VERSION 17 AND ABOVE
+
 ## Changelog
 
 ### Now supports language
