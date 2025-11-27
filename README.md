@@ -1,7 +1,9 @@
 # GoBangGame
 A small chinese game written in java
 
-## THIS GAME REQUIRES JAVA VERSION 17 AND ABOVE
+![Java](https://img.shields.io/badge/Java-25-blue)
+![Eclipse](https://img.shields.io/badge/Eclipse_Worspace-4.37.0-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
