@@ -2,7 +2,7 @@
 A small chinese game written in java
 
 ![Java](https://img.shields.io/badge/Java-25-blue)
-![Eclipse](https://img.shields.io/badge/Eclipse_Worspace-4.37.0-orange)
+![Maven](https://img.shields.io/badge/Apache%20Maven-3.9.11-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Exe](https://img.shields.io/badge/Windows-EXE-red)
 ![jar](https://img.shields.io/badge/Java-JAR-blue)
