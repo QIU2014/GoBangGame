@@ -6,6 +6,7 @@ A small chinese game written in java
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Exe](https://img.shields.io/badge/Windows-EXE-red)
 ![jar](https://img.shields.io/badge/Java-JAR-blue)
+[![Maven Package](https://github.com/QIU2014/GoBangGame/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/QIU2014/GoBangGame/actions/workflows/maven-publish.yml)
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
 [![Download GoBangGame](https://img.shields.io/badge/Github_Release-Latest-blue)](https://github.com/qiu2014/gobanggame/releases/latest)
