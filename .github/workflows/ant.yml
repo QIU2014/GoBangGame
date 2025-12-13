@@ -23,3 +23,9 @@ jobs:
         distribution: 'temurin'
     - name: Build fat jar with Ant
       run: ant -f build.xml ci
+    - name: Upload JAR as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GobangGame-JAR
+        path: dist/*.jar
+        retention-days: 7
