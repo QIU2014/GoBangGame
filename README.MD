@@ -1,7 +1,7 @@
 # GoBangGame
 A small chinese game written in java
 
-![Java](https://img.shields.io/badge/Java-25-blue)
+![Java](https://img.shields.io/badge/Java-21-blue)
 ![Maven](https://img.shields.io/badge/Apache%20Maven-3.9.11-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Exe](https://img.shields.io/badge/Windows-EXE-red)
