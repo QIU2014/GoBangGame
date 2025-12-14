@@ -10,7 +10,7 @@ A small chinese game written in java
 
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
-[![Download GoBangGame](https://img.shields.io/badge/Github_Release-Latest-blue)](https://github.com/qiu2014/gobanggame/releases/latest)
+![GitHub Release](https://img.shields.io/github/v/release/QIU2014/gobanggame?include_prereleases&display_name=release&logo=github&label=Github%20Releases&color=blue)
 
 ## Changelog
 
