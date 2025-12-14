@@ -3,10 +3,11 @@ A small chinese game written in java
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Maven](https://img.shields.io/badge/Apache%20Maven-3.9.11-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Exe](https://img.shields.io/badge/Windows-EXE-red)
+![GitHub License](https://img.shields.io/github/license/QIU2014/gobanggame)
 ![jar](https://img.shields.io/badge/Java-JAR-blue)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/QIU2014/GoBangGame/ant.yml)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/QIU2014/gobanggame)
+![SourceForge Downloads](https://img.shields.io/sourceforge/dt/GoBangGame)
 
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
