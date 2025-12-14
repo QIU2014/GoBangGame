@@ -33,7 +33,7 @@ jobs:
       uses: schneegans/dynamic-badges-action@v1.7.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
-        gistID: db8144e9156b8ca705f1efdf201f1ff9
+        gistID: f119c71a7193a11e52b0eef32beb3863
         filename: build.json
         label: Build
         message: IDLE
