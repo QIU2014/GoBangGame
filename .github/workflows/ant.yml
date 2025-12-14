@@ -29,12 +29,3 @@ jobs:
         name: GobangGame-JAR
         path: dist/*.jar
         retention-days: 7
-    - name: Build Badge
-      uses: schneegans/dynamic-badges-action@v1.7.0
-      with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gistID: f119c71a7193a11e52b0eef32beb3863
-        filename: build.json
-        label: Build
-        message: IDLE
-        color: orange
