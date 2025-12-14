@@ -67,6 +67,27 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>de.perdian.maven.plugins</groupId>
+        <artifactId>macosappbundler-maven-plugin</artifactId>
+        <version>1.21.1</version>
+        <configuration>
+          <plist>
+            <JVMMainClassName>com.eric.GobangGame.GobangGame</JVMMainClassName>
+          </plist>
+          <jdk>
+            <include>true</include>
+          </jdk>
+        </configuration>
+        <executions>
+          <execution>
+          <phase>package</phase>
+          <goals>
+            <goal>bundle</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
     </plugins>
   </build>
 </project>
