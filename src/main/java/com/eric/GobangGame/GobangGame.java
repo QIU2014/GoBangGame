@@ -438,25 +438,25 @@ public class GobangGame extends JFrame{
             Locale newLocale;
             switch (selectedIndex) {
                 case 0:
-                    newLocale = new Locale("zh", "CN");
+                    newLocale = Locale.of("zh", "CN");
                     break;
                 case 1:
-                    newLocale = new Locale("zh", "TW");
+                    newLocale = Locale.of("zh", "TW");
                     break;
                 case 2:
-                    newLocale = new Locale("en", "US");
+                    newLocale = Locale.of("en", "US");
                     break;
                 case 3:
-                    newLocale = new Locale("de", "DE");
+                    newLocale = Locale.of("de", "DE");
                     break;
                 case 4:
-                    newLocale = new Locale("ko", "KP");
+                    newLocale = Locale.of("ko", "KP");
                     break;
                 case 5:
-                    newLocale = new Locale("ko", "KR");
+                    newLocale = Locale.of("ko", "KR");
                     break;
                 default:
-                    newLocale = new Locale("zh", "CN");
+                    newLocale = Locale.of("zh", "CN");
             }
             
             setLanguage(newLocale);
