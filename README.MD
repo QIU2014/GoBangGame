@@ -16,7 +16,7 @@ A small chinese game written in java
 
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
-[![GitHub Release](https://img.shields.io/github/v/release/QIU2014/gobanggame?include_prereleases&display_name=release&logo=github&label=Github%20Releases&color=blue)](https://github.com/QIU2014/GoBangGame/releases/latest)
+![Latest GitHub Release](https://img.shields.io/github/v/release/QIU2014/GoBangGame?include_prereleases&display_name=release&style=flat&logo=github&label=Latest%20release&cacheSeconds=30)
 
 ## Changelog
 
