@@ -30,7 +30,6 @@ Supports Game saving and Game opening
 
 ## Notes
 - Korean may be removed in a future build
-- Will no longer build exe executables and only distribute jar files
 
 ## Executable
 Windows executable built by Launch4j-maven-plugin
