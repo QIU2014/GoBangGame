@@ -33,9 +33,8 @@ Supports Game saving and Game opening
 - Will no longer build exe executables and only distribute jar files
 
 ## Executable
-~~Windows executable built by **Launch4j**~~
-
-Workspace & IDE using Eclipse
+Windows executable built by Launch4j-maven-plugin
+Macos executable built by macosappbundler-maven-plugin
 
 ## Building
 Open it using Eclipse IDE for Java
