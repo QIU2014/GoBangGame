@@ -7,7 +7,7 @@ A small chinese game written in java
 ![jar](https://img.shields.io/badge/Java-JAR-blue)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/QIU2014/GoBangGame/ant.yml)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/QIU2014/gobanggame)
-![GitHub Repo stars](https://img.shields.io/github/stars/QIU2014/GobangGame?style=flat) <br>
+![GitHub Repo stars](https://img.shields.io/github/stars/QIU2014/GobangGame?style=flat)
 ![launch4j-maven-plugin](https://img.shields.io/badge/Launch4j_maven_plugin-v2.6.0-green)
 ![macosappbundler-maven-plugin](https://img.shields.io/badge/macosappbundler_maven_plugin-v1.21.1-orange)
 ![GitHub repo size](https://img.shields.io/github/repo-size/QIU2014/GoBangGame)
