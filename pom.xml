@@ -78,6 +78,9 @@
           <jdk>
             <include>true</include>
           </jdk>
+          <dmg>
+            <generate>true</generate>
+          </dmg>
         </configuration>
         <executions>
           <execution>

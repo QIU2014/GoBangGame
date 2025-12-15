@@ -414,6 +414,7 @@ public class GobangGame extends JFrame{
             messages.getString("language.chinese_simple"),
             messages.getString("language.chinese_traditional"), 
             messages.getString("language.english"),
+            messages.getString("language.german"),
             messages.getString("language.korean_north_korea"),
             messages.getString("language.korean_south_korea")
         };
@@ -446,9 +447,12 @@ public class GobangGame extends JFrame{
                     newLocale = new Locale("en", "US");
                     break;
                 case 3:
-                    newLocale = new Locale("ko", "KP");
+                    newLocale = new Locale("de", "DE");
                     break;
                 case 4:
+                    newLocale = new Locale("ko", "KP");
+                    break;
+                case 5:
                     newLocale = new Locale("ko", "KR");
                     break;
                 default:
