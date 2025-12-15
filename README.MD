@@ -37,6 +37,14 @@ Windows executable built by Launch4j-maven-plugin
 Macos executable built by macosappbundler-maven-plugin
 
 ## Building
-Open it using Eclipse IDE for Java
+Navigate to cloned directory, execute:
+```bash
+mvn clean build
+```
+or, if you don't want all executables
+```bash
+ant
+```
+for the jar only
 
 [![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download) 
