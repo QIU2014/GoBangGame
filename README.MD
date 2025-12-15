@@ -37,7 +37,12 @@ Windows executable built by Launch4j-maven-plugin
 Macos executable built by macosappbundler-maven-plugin
 
 ## Building
-Navigate to cloned directory, execute:
+
+Clone the directory using
+```bash
+git clone https://github.com/QIU2014/GoBangGame.git
+```
+Navigate to cloned directory (cd GoBangGame), execute:
 ```bash
 mvn clean build
 ```
