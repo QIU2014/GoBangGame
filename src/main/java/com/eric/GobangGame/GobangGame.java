@@ -47,6 +47,8 @@ public class GobangGame extends JFrame{
     private JButton undoBtn, restartBtn, closeBtn;
     private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
     private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
+    private JPanel sidePanel;
+    private JLabel thinkingLabel;
 
     // 构造方法：初始化游戏窗口（棋盘+右侧按钮）
     public GobangGame() {
@@ -54,7 +56,7 @@ public class GobangGame extends JFrame{
         this.ai = new GobangGameAi(aiDifficulty);
         
         // 初始化语言（默认简体中文）
-        setLanguage(new Locale("zh", "CN"));
+        setLanguage(Locale.of("zh", "CN"));
         
         setTitle(messages.getString("game.title"));
         // 窗口大小 = 棋盘宽度 + 按钮宽度 + 边距，高度与棋盘一致
@@ -592,10 +594,10 @@ public class GobangGame extends JFrame{
         // 判断是否该AI落子
         if ((isBlackTurn && aiPlayer == 1) || (!isBlackTurn && aiPlayer == 2)) {
             // 显示思考中提示
-            JOptionPane.showMessageDialog(this, 
+            /*JOptionPane.showMessageDialog(this, 
                 messages.getString("message.ai_thinking"), 
                 messages.getString("message.title.info"), 
-                JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.INFORMATION_MESSAGE);*/
             
             // 在新线程中执行AI计算（避免UI冻结）
             new Thread(() -> {
