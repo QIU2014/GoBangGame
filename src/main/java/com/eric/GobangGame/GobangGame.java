@@ -47,8 +47,6 @@ public class GobangGame extends JFrame{
     private JButton undoBtn, restartBtn, closeBtn;
     private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
     private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
-    private JPanel sidePanel;
-    private JLabel thinkingLabel;
 
     // 构造方法：初始化游戏窗口（棋盘+右侧按钮）
     public GobangGame() {

@@ -290,7 +290,7 @@ public class GobangGameAi {
             }
             return new Object[]{minEval, bestMove};
         }
-            }
+    }
     
     /**
      * 获取所有可能的落子位置（优化：只考虑有棋子的附近位置）

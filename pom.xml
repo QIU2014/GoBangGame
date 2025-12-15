@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.eric</groupId>
   <artifactId>GobangGame</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
   <name>GoBangGame</name>
   <description>Chinese game rewritten in java</description>
   <build>
