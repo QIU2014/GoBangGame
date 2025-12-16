@@ -34,6 +34,18 @@ jobs:
         name: GobangGame-DMG
         path: target/*.dmg
         retention-days: 7
+    - name: Upload EXE as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GobangGame-EXE
+        path: target/*.exe
+        retention-days: 7
+    - name: Upload linux executable as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GobangGame-Linux
+        path: target/GobangGame
+        retention-days: 7
     # - name: Upload logs as artifact
     #  if: failure()
     #  uses: actions/upload-artifact@v4
