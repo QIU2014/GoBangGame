@@ -20,7 +20,7 @@ jobs:
         distribution: 'temurin'
     # - name: Build fat jar with Ant
     #  run: ant -f build.xml ci
-    - name: Build jar with maven
+    - name: Build jar and dmg with maven
       run: mvn clean package
     - name: Upload JAR as artifact
       uses: actions/upload-artifact@v4
