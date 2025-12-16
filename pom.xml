@@ -109,5 +109,6 @@
 	    </executions>
     </plugin>
     </plugins>
+    <finalName>GobangGame</finalName>
   </build>
 </project>
