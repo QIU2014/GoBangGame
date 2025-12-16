@@ -21,11 +21,19 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-    - name: Build fat jar with Ant
-      run: ant -f build.xml ci
+    # - name: Build fat jar with Ant
+    #  run: ant -f build.xml ci
+    - name: Build jar with maven
+      run: mvn clean package
     - name: Upload JAR as artifact
       uses: actions/upload-artifact@v4
       with:
         name: GobangGame-JAR
-        path: dist/*.jar
+        path: target/*.jar
+        retention-days: 7
+    - name: Upload DMG as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GobangGame-DMG
+        path: target/*.dmg
         retention-days: 7
