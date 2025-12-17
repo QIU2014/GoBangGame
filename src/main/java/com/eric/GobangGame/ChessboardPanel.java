@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
  * 棋盘面板：负责绘制棋盘、棋子，处理鼠标落子事件
  */
 public class ChessboardPanel extends JPanel {
+    @SuppressWarnings("unused")
     private final GobangGame game;
     private int[][] board; // 现在引用主类的board
     private final int ROW;
@@ -40,6 +41,7 @@ public class ChessboardPanel extends JPanel {
                 // 校验坐标是否合法
                 if (i >= 0 && i < ROW && j >= 0 && j < COL && board[i][j] == 0) {
                     int currentPlayer = game.isBlackTurn() ? 1 : 2;
+                    @SuppressWarnings("unused")
                     ResourceBundle messages = game.getUi().getMessages();
                     
                     // 人机对战模式下的回合检查

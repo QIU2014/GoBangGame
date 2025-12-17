@@ -1,7 +1,5 @@
 package com.eric.GobangGame;
 
-import java.util.ResourceBundle;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
