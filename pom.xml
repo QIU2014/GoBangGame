@@ -3,8 +3,16 @@
   <groupId>com.eric</groupId>
   <artifactId>GobangGame</artifactId>
   <version>0</version>
+  <inceptionYear>2025</inceptionYear>
+  <organization>
+    <name>Qiuerichanru</name>
+  </organization>
   <name>GoBangGame</name>
   <description>Chinese game rewritten in java</description>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
@@ -16,6 +24,30 @@
       </resource>
     </resources>
     <plugins>
+      <!-- 1. macOS 应用程序包 -->
+      <plugin>
+        <groupId>de.perdian.maven.plugins</groupId>
+        <artifactId>macosappbundler-maven-plugin</artifactId>
+        <version>1.21.1</version>
+        <configuration>
+          <plist>
+            <JVMMainClassName>com.eric.GobangGame.GobangGame</JVMMainClassName>
+          </plist>
+          <dmg>
+            <generate>true</generate>
+          </dmg>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 2. 可执行 JAR -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
@@ -23,10 +55,12 @@
           <release>21</release>
         </configuration>
       </plugin>
+
+      <!-- 3. Shade 插件 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.1</version> <!-- Use the latest version -->
+        <version>3.6.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -34,17 +68,17 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <!-- Configuration for executable JAR -->
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                <mainClass>com.eric.GobangGame.GobangGame</mainClass>
+                  <mainClass>com.eric.GobangGame.GobangGame</mainClass>
                 </transformer>
               </transformers>
-              <!-- Other configurations like relocations go here -->
             </configuration>
           </execution>
         </executions>
       </plugin>
+
+      <!-- 4. Windows EXE -->
       <plugin>
         <groupId>com.akathist.maven.plugins.launch4j</groupId>
         <artifactId>launch4j-maven-plugin</artifactId>
@@ -67,47 +101,25 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- 5. 可执行 JAR（Linux/Mac） -->
       <plugin>
-        <groupId>de.perdian.maven.plugins</groupId>
-        <artifactId>macosappbundler-maven-plugin</artifactId>
-        <version>1.21.1</version>
+        <groupId>org.skife.maven</groupId>
+        <artifactId>really-executable-jar-maven-plugin</artifactId>
+        <version>1.5.0</version>
         <configuration>
-          <plist>
-            <JVMMainClassName>com.eric.GobangGame.GobangGame</JVMMainClassName>
-          </plist>
-          <jdk>
-            <include>true</include>
-          </jdk>
-          <dmg>
-            <generate>true</generate>
-          </dmg>
+          <flags>-Xmx1G</flags>
+          <programFile>${project.artifactId}</programFile>
         </configuration>
         <executions>
           <execution>
-          <phase>package</phase>
-          <goals>
-            <goal>bundle</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-    <plugin>
-	    <groupId>org.skife.maven</groupId>
-	    <artifactId>really-executable-jar-maven-plugin</artifactId>
-	    <version>1.5.0</version>
-	    <configuration>
-		    <flags>-Xmx1G</flags>
-		    <programFile>${project.artifactId}</programFile>
-	    </configuration>
-	    <executions>
-		    <execution>
-			    <phase>package</phase>
-			    <goals>
-				    <goal>really-executable-jar</goal>
-			    </goals>
-		    </execution>
-	    </executions>
-    </plugin>
+            <phase>package</phase>
+            <goals>
+              <goal>really-executable-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <finalName>GobangGame</finalName>
   </build>
