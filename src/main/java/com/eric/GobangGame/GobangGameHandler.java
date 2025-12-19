@@ -20,27 +20,38 @@ public class GobangGameHandler {
     /**
      * 玩家/AI落子并检查游戏状态
      */
+    /**
+     * 玩家/AI落子并检查游戏状态
+     */
     public void playerMove(int row, int col, int playerType) {
+        System.out.println("Handler.playerMove 被调用: 位置(" + row + ", " + col + "), 玩家类型=" + playerType); // 调试
+
         int[][] board = game.getBoard();
-        
+
         // 1. 记录落子
         board[row][col] = playerType;
         game.getMoveHistory().add(new int[]{row, col});
         game.repaint(); // 立即更新棋盘显示
 
+        System.out.println("落子完成，当前黑棋回合: " + game.isBlackTurn()); // 调试
+
         // 2. 检查游戏是否结束
         if (checkWin(row, col)) {
+            System.out.println("游戏结束，玩家" + playerType + "获胜"); // 调试
             game.getUi().showWinMessage(playerType);
             game.setGameOver(true);
         } else if (checkDraw()) {
+            System.out.println("游戏平局"); // 调试
             game.getUi().showDrawMessage();
             game.setGameOver(true);
         } else {
             // 3. 切换回合
             game.setBlackTurn(!game.isBlackTurn());
-            
+            System.out.println("切换回合，新回合黑棋: " + game.isBlackTurn()); // 调试
+
             // 4. 如果是人机对战，且游戏未结束，让AI落子
             if (game.getGameMode() == 1 && !game.isGameOver()) {
+                System.out.println("人机模式，准备AI回合..."); // 调试
                 aiTurn();
             }
         }

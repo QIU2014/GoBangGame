@@ -29,14 +29,14 @@ public class GobangGame extends JFrame{
     
     // --- 游戏模式状态 ---
     private int gameMode = 0; // 0=双人，1=人机
-    private int aiDifficulty = 1; // AI难度
+    private int aiDifficulty = 1; // AI 难度
     private boolean playerIsBlack = true; // 玩家是否执黑
 
     // --- 模块引用 ---
     private GobangGameAi ai;
     private GobangGameUI ui;
     private GobangGameHandler handler;
-    private ChessboardPanel chessboard; 
+    private ChessboardPanel chessboard;
 
     // 构造方法
     public GobangGame() {
@@ -59,7 +59,7 @@ public class GobangGame extends JFrame{
         container.setLayout(new BorderLayout(20, 0));
 
         // 4. 添加棋盘面板 (View)
-        this.chessboard = new ChessboardPanel(this, board, ROW, COL, CELL_SIZE, MARGIN);
+        this.chessboard = new ChessboardPanel(this, ROW, COL, CELL_SIZE, MARGIN); // 移除 board 参数
         container.add(chessboard, BorderLayout.CENTER);
 
         // 5. 添加按钮面板 (View)
@@ -104,7 +104,7 @@ public class GobangGame extends JFrame{
         }
         
         // 撤销最后一步落子
-        int[] lastMove = moveHistory.remove(moveHistory.size() - 1);
+        int[] lastMove = moveHistory.removeLast();
         board[lastMove[0]][lastMove[1]] = 0; 
         isBlackTurn = !isBlackTurn; 
         
@@ -115,7 +115,7 @@ public class GobangGame extends JFrame{
             int currentPlayer = isBlackTurn ? 1 : 2;
             
             if (currentPlayer != playerColor) {
-                lastMove = moveHistory.remove(moveHistory.size() - 1);
+                lastMove = moveHistory.removeLast();
                 board[lastMove[0]][lastMove[1]] = 0; 
                 isBlackTurn = !isBlackTurn; 
             }
@@ -153,7 +153,6 @@ public class GobangGame extends JFrame{
             this.playerIsBlack = save.isPlayerIsBlack();
             this.aiDifficulty = save.getAiDifficulty();
             this.ai.setDifficulty(save.getAiDifficulty());
-            this.chessboard.setBoard(this.board);
 
     		// 加载存档后，如果游戏未结束且是人机对战模式，可能需要AI行动
     		if (gameMode == 1 && !gameOver) {
@@ -207,8 +206,8 @@ public class GobangGame extends JFrame{
     		game.setVisible(true);
         
     		SwingUtilities.invokeLater(() -> {
-    			game.ui.showGameModeDialog();
-    		});
+                game.ui.showGameModeDialog();
+            });
     	});
     }
 }
