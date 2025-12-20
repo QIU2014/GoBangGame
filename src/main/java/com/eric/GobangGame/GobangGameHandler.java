@@ -56,36 +56,48 @@ public class GobangGameHandler {
             }
         }
     }
-    
+
     /**
      * AI思考并落子
      */
     public void aiTurn() {
         if (game.isGameOver()) return;
-        
+
         // 确定AI的棋子颜色
         int aiPlayer = game.isPlayerIsBlack() ? 2 : 1; // 玩家执黑则AI执白，反之亦然
-        
+
         // 判断是否该AI落子
         if ((game.isBlackTurn() && aiPlayer == 1) || (!game.isBlackTurn() && aiPlayer == 2)) {
+            // 更新AI状态为Working
+            game.getUi().updateAiLabel("AI: Thinking...");
+
             // 在新线程中执行AI计算（避免UI冻结）
             new Thread(() -> {
                 try {
                     // 根据难度设置不同的思考时间
                     int thinkTime = (game.getAiDifficulty() + 1) * 500; // 0.5-1.5秒
                     Thread.sleep(thinkTime); // 模拟思考时间
-                    
+
                     SwingUtilities.invokeLater(() -> {
                         // AI计算最佳落子位置
                         int[] move = game.getAi().calculateMove(game.getBoard(), aiPlayer);
-                        
+
                         if (move[0] != -1 && move[1] != -1 && game.getBoard()[move[0]][move[1]] == 0) {
+                            // AI落子前再次确认状态
+                            game.getUi().updateAiLabel("AI: Moving...");
+
                             // AI落子，调用playerMove处理后续状态检查
                             playerMove(move[0], move[1], aiPlayer);
+
+                            // 落子完成后，更新AI状态为IDLE（等待玩家）
+                            game.getUi().updateAiLabel("AI: IDLE");
                         }
                     });
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
+                    SwingUtilities.invokeLater(() -> {
+                        game.getUi().updateAiLabel("AI: Error");
+                    });
                 }
             }).start();
         }

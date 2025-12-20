@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 五子棋游戏主类 - 协调器
@@ -25,7 +26,8 @@ public class GobangGame extends JFrame{
     private int[][] board = new int[ROW][COL];
     private boolean isBlackTurn = true; 
     private boolean gameOver = false;
-    private List<int[]> moveHistory = new ArrayList<>(); 
+    private List<int[]> moveHistory = new ArrayList<>();
+    private int currentPlayer = isBlackTurn() ? 1 : 2;
     
     // --- 游戏模式状态 ---
     private int gameMode = 0; // 0=双人，1=人机
@@ -80,14 +82,19 @@ public class GobangGame extends JFrame{
         moveHistory.clear();
         isBlackTurn = true;
         gameOver = false;
-        
+
+
+        if (gameMode == 1) {
+            ui.updateAiLabel("AI: IDLE");
+        }
+
         // 如果是人机对战且AI先手，则调用AI回合
         if (gameMode == 1 && (isBlackTurn && !playerIsBlack || !isBlackTurn && playerIsBlack)) {
             SwingUtilities.invokeLater(() -> {
                 handler.aiTurn();
             });
         }
-        
+
         repaint();
     }
     
@@ -143,7 +150,7 @@ public class GobangGame extends JFrame{
     public void loadGame(File file) {
     	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
     		GameSave save = (GameSave) ois.readObject();
-        
+
     		// Restore game state
     		this.board = save.getBoard();
     		this.isBlackTurn = save.isBlackTurn();
@@ -161,12 +168,24 @@ public class GobangGame extends JFrame{
     				handler.aiTurn();
     			}
     		}
-        
+
     		repaint();
     		ui.showMessage("message.load_success", "message.title.success", JOptionPane.INFORMATION_MESSAGE);
     	} catch (IOException | ClassNotFoundException ex) {
     		ui.showMessage("message.load_failed", "message.title.error", JOptionPane.ERROR_MESSAGE);
     	}
+    }
+
+    public boolean getAiState() {
+        if (getGameMode() == 1) {
+            int playerColor = playerIsBlack ? 1 : 2;
+            if (currentPlayer != playerColor) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
     
     // --- Getters and Setters ---

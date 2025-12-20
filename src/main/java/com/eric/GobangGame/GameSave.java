@@ -1,5 +1,6 @@
 package com.eric.GobangGame;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
  * Inner class to represent game save data
  */
 public class GameSave implements Serializable {
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	private int[][] board;
 	private boolean isBlackTurn;

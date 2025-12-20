@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
+import com.eric.GobangGame.GobangGameUI.*;
 
 /**
  * 棋盘面板：负责绘制棋盘、棋子，处理鼠标落子事件
@@ -41,19 +42,17 @@ public class ChessboardPanel extends JPanel {
                     int[][] board = game.getBoard(); // 从 game 获取当前棋盘
                     if (board[i][j] == 0) {
                         int currentPlayer = game.isBlackTurn() ? 1 : 2;
-                        @SuppressWarnings("unused")
-                        ResourceBundle messages = game.getUi().getMessages();
 
                         // 人机对战模式下的回合检查
                         if (game.getGameMode() == 1) {
                             int playerColor = game.isPlayerIsBlack() ? 1 : 2;
                             if (currentPlayer != playerColor) {
-                                game.getUi().showMessage("message.ai_thinking", "message.title.info", JOptionPane.INFORMATION_MESSAGE);
                                 return;
+                            } else {
+                                game.getUi().updateAiLabel("AI: IDLE");
                             }
                         }
 
-                        // 调用Handler进行落子和状态更新
                         game.getHandler().playerMove(i, j, currentPlayer);
                     }
                 }

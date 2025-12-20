@@ -20,9 +20,10 @@ public class GobangGameUI {
     private JComboBox<String> languageComboBox;
 
     // UI组件引用 (由GobangGame持有)
-    private JButton undoBtn, restartBtn, closeBtn;
+    private JButton undoBtn, restartBtn, closeBtn, loadBtn, saveBtn;
     private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
     private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
+    private JLabel aiState;
 
     public GobangGameUI(GobangGame game, Locale initialLocale) {
         this.game = game;
@@ -85,36 +86,84 @@ public class GobangGameUI {
      */
     public JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 50));
-        buttonPanel.setPreferredSize(new Dimension(game.getBUTTON_WIDTH(), game.getHeight())); // 使用Getter获取尺寸
-
+        // 回到原来的FlowLayout，但减少垂直间距
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
+        buttonPanel.setPreferredSize(new Dimension(game.getBUTTON_WIDTH(), game.getHeight()));
+        try {
+            this.saveBtn = new JButton(messages.getString("button.save"));
+            this.loadBtn = new JButton(messages.getString("button.load"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Falling back to hard-coded text");
+            this.saveBtn = new JButton("Save");
+            this.loadBtn = new JButton("Open");
+        }
         this.undoBtn = new JButton(messages.getString("button.undo"));
         this.restartBtn = new JButton(messages.getString("button.restart"));
         this.closeBtn = new JButton(messages.getString("button.exit"));
+        this.aiState = new JLabel("AI: IDLE", SwingConstants.CENTER);
 
         Dimension btnSize = new Dimension(game.getBUTTON_WIDTH(), game.getBUTTON_HEIGHT());
 
         // 设置按钮属性
+        saveBtn.setPreferredSize(btnSize);
+        loadBtn.setPreferredSize(btnSize);
         undoBtn.setPreferredSize(btnSize);
         restartBtn.setPreferredSize(btnSize);
         closeBtn.setPreferredSize(btnSize);
-        
+
         Font font = new Font("宋体", Font.PLAIN, 14);
+        saveBtn.setFont(font);
+        loadBtn.setFont(font);
         undoBtn.setFont(font);
         restartBtn.setFont(font);
         closeBtn.setFont(font);
+        aiState.setFont(font);
 
+        // 设置AI标签样式
+        aiState.setForeground(Color.BLUE);
 
         // 添加按钮事件
+        saveBtn.addActionListener(e -> saveItem.getActionListeners()[0].actionPerformed(null));
+        loadBtn.addActionListener(e -> openItem.getActionListeners()[0].actionPerformed(null));
         undoBtn.addActionListener(e -> game.undoMove());
         restartBtn.addActionListener(e -> game.startNewGame());
         closeBtn.addActionListener(e -> System.exit(0));
 
+        // 直接添加组件到buttonPanel
+        buttonPanel.add(saveBtn);
+        buttonPanel.add(loadBtn);
         buttonPanel.add(undoBtn);
         buttonPanel.add(restartBtn);
         buttonPanel.add(closeBtn);
 
+        // 添加一个分隔符
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        separator.setPreferredSize(new Dimension(game.getBUTTON_WIDTH() - 20, 2));
+        buttonPanel.add(separator);
+
+        // 添加AI标签
+        buttonPanel.add(aiState);
+
         return buttonPanel;
+    }
+
+    public void updateAiLabel(String state) {
+        if (aiState != null) {
+            aiState.setText(state);
+
+            // 根据状态改变颜色
+            if (state.contains("Thinking") || state.contains("Working")) {
+                aiState.setForeground(Color.RED);
+            } else if (state.contains("IDLE")) {
+                aiState.setForeground(Color.GREEN);
+            } else if (state.contains("Error")) {
+                aiState.setForeground(Color.ORANGE);
+            }
+
+            // 确保标签可见
+            aiState.repaint();
+        }
     }
 
     /**
@@ -307,6 +356,7 @@ public class GobangGameUI {
             game.setAiDifficulty(difficultyCombo.getSelectedIndex());
             game.setPlayerIsBlack(blackRadio.isSelected());
             game.getAi().setDifficulty(game.getAiDifficulty()); // 更新AI实例难度
+            game.getUi().updateAiLabel("AI: IDLE");
             game.startNewGame();
             settingsWindow.dispose();
             if (parentWindow != null) {
