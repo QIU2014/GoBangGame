@@ -26,7 +26,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: GobangGame-JAR
-        path: target/*.jar
+        path: target/GobangGame.jar
+        retention-days: 7
+    - name: Upload Source JAR as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GobangGame-SRC-JAR
+        path: target/GobangGame-sources.jar
         retention-days: 7
     - name: Upload DMG as artifact
       uses: actions/upload-artifact@v4
