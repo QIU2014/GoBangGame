@@ -1,5 +1,6 @@
 # GoBangGame
 A small chinese game written in java
+Please consider donating a star if you liked it
 
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Maven](https://img.shields.io/badge/Apache%20Maven-3.9.11-orange)
@@ -18,9 +19,8 @@ A small chinese game written in java
 ## Download
 [![Download GoBangGame](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/gobanggame/files/latest/download) <br>
 [![Latest GitHub Release](https://img.shields.io/github/v/release/QIU2014/GoBangGame?include_prereleases&display_name=release&style=flat&logo=github&label=Latest%20release&cacheSeconds=30)](https://github.com/QIU2014/GoBangGame/releases/latest)
-## Changelog
 
-### Now supports language
+## Now supports language
 - Chinese (Simplified)
 - Chinese (Traditional)
 - English (US)
@@ -56,5 +56,3 @@ for the jar only
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=QIU2014/GobangGame&type=date&legend=top-left)](https://www.star-history.com/#QIU2014/GobangGame&type=date&legend=top-left)
-
-[![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download) 
