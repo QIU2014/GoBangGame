@@ -53,4 +53,8 @@ ant
 ```
 for the jar only
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=QIU2014/GobangGame&type=date&legend=top-left)](https://www.star-history.com/#QIU2014/GobangGame&type=date&legend=top-left)
+
 [![Download GoBangGame](https://img.shields.io/sourceforge/dt/gobanggame.svg)](https://sourceforge.net/projects/gobanggame/files/latest/download) 
