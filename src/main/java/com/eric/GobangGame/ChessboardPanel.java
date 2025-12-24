@@ -53,7 +53,20 @@ public class ChessboardPanel extends JPanel {
                             }
                         }
 
+                        // 多人游戏模式下的回合检查
+                        else if (game.getGameMode() == 2) {
+                            if (game.getMultiPlayer() != null && !game.getMultiPlayer().isMyTurn()) {
+                                game.getUi().showMessage("message.not_your_turn", "message.title.info", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                        }
+
                         game.getHandler().playerMove(i, j, currentPlayer);
+
+                        // 如果是多人游戏模式，发送落子消息
+                        if (game.getGameMode() == 2 && game.getMultiPlayer() != null) {
+                            game.getMultiPlayer().sendMove(i, j);
+                        }
                     }
                 }
             }

@@ -39,6 +39,7 @@ public class GobangGame extends JFrame{
     private GobangGameUI ui;
     private GobangGameHandler handler;
     private ChessboardPanel chessboard;
+    private GobangGameMultiPlayer multiPlayer;
 
     // 构造方法
     public GobangGame() {
@@ -83,9 +84,12 @@ public class GobangGame extends JFrame{
         isBlackTurn = true;
         gameOver = false;
 
-
+        // 更新UI状态
         if (gameMode == 1) {
             ui.updateAiLabel("AI: IDLE");
+        } else if (gameMode == 2 && multiPlayer != null) {
+            // 多人游戏模式：根据当前回合更新显示
+            multiPlayer.updateTurnDisplay();
         }
 
         // 如果是人机对战且AI先手，则调用AI回合
@@ -102,11 +106,17 @@ public class GobangGame extends JFrame{
      * 悔棋操作
      */
     public void undoMove() {
+        // 多人游戏模式下禁止悔棋
+        if (gameMode == 2) {
+            ui.showMessage("message.cannot_undo_multiplayer", "message.title.tip", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if (gameOver || moveHistory.isEmpty()) {
             ui.showMessage(
-                gameOver ? "message.cannot_undo_game_over" : "message.cannot_undo_no_moves",
-                "message.title.tip",
-                JOptionPane.WARNING_MESSAGE);
+                    gameOver ? "message.cannot_undo_game_over" : "message.cannot_undo_no_moves",
+                    "message.title.tip",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
         
@@ -202,6 +212,11 @@ public class GobangGame extends JFrame{
     public void setPlayerIsBlack(boolean playerIsBlack) { this.playerIsBlack = playerIsBlack; }
     public int getAiDifficulty() { return aiDifficulty; }
     public void setAiDifficulty(int aiDifficulty) { this.aiDifficulty = aiDifficulty; }
+    public GobangGameMultiPlayer getMultiPlayer() {
+        if (multiPlayer == null) {multiPlayer = new GobangGameMultiPlayer(this);}
+        return multiPlayer;
+    }
+    public void setMultiPlayer(GobangGameMultiPlayer multiPlayer) {this.multiPlayer = multiPlayer;}
     
     // 模块 Getter
     public GobangGameAi getAi() { return ai; }

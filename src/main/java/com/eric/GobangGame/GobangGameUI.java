@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 负责构建和管理所有用户界面元素（菜单、按钮、对话框）
@@ -148,17 +149,238 @@ public class GobangGameUI {
         return buttonPanel;
     }
 
+    /**
+     * 显示多人游戏设置对话框
+     */
+    public void showMultiplayerDialog() {
+        JFrame mpWindow = new JFrame(messages.getString("dialog.multiplayer_settings"));
+        mpWindow.setSize(500, 400);
+        mpWindow.setLocationRelativeTo(null);
+        mpWindow.setResizable(false);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // 角色选择部分
+        JPanel rolePanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        rolePanel.setBorder(BorderFactory.createTitledBorder(messages.getString("label.select_role")));
+
+        JRadioButton hostRadio = new JRadioButton(messages.getString("role.host"));
+        JRadioButton clientRadio = new JRadioButton(messages.getString("role.client"));
+        ButtonGroup roleGroup = new ButtonGroup();
+        roleGroup.add(hostRadio);
+        roleGroup.add(clientRadio);
+        hostRadio.setSelected(true);
+
+        rolePanel.add(hostRadio);
+        rolePanel.add(clientRadio);
+        rolePanel.add(new JLabel()); // 占位符
+
+        // 设置部分
+        JPanel settingsPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        settingsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel nameLabel = new JLabel(messages.getString("label.player_name") + ":");
+        JTextField nameField = new JTextField("Player" + (int)(Math.random() * 1000));
+
+        JLabel addressLabel = new JLabel(messages.getString("label.server_address") + ":");
+        JTextField addressField = new JTextField("localhost");
+        addressField.setEnabled(false); // 默认禁用，主机模式不需要
+
+        JLabel portLabel = new JLabel(messages.getString("label.server_port") + ":");
+        JTextField portField = new JTextField("12345");
+
+        settingsPanel.add(nameLabel);
+        settingsPanel.add(nameField);
+        settingsPanel.add(addressLabel);
+        settingsPanel.add(addressField);
+        settingsPanel.add(portLabel);
+        settingsPanel.add(portField);
+
+        // 按钮面板
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JButton createBtn = new JButton(messages.getString("button.create_host"));
+        JButton connectBtn = new JButton(messages.getString("button.connect"));
+        JButton cancelBtn = new JButton(messages.getString("button.cancel"));
+
+        createBtn.setEnabled(true);
+        connectBtn.setEnabled(false);
+
+        // 角色选择变化时更新UI
+        hostRadio.addActionListener(e -> {
+            createBtn.setEnabled(true);
+            connectBtn.setEnabled(false);
+            addressField.setEnabled(false);
+            addressField.setText("localhost");
+        });
+
+        clientRadio.addActionListener(e -> {
+            createBtn.setEnabled(false);
+            connectBtn.setEnabled(true);
+            addressField.setEnabled(true);
+            addressField.setText("");
+        });
+
+        // 按钮事件
+        createBtn.addActionListener(e -> {
+            String playerName = nameField.getText().trim();
+            String portText = portField.getText().trim();
+
+            if (playerName.isEmpty()) {
+                showMessage("message.name_required", "message.title.error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int port = Integer.parseInt(portText);
+                if (port < 1024 || port > 65535) {
+                    showMessage("message.invalid_port", "message.title.error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 创建主机 - 现在是非阻塞的
+                game.getMultiPlayer().createServer(port, playerName);
+                mpWindow.dispose();
+
+            } catch (NumberFormatException ex) {
+                showMessage("message.invalid_port", "message.title.error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        connectBtn.addActionListener(e -> {
+            String playerName = nameField.getText().trim();
+            String address = addressField.getText().trim();
+            String portText = portField.getText().trim();
+
+            if (playerName.isEmpty()) {
+                showMessage("message.name_required", "message.title.error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (address.isEmpty()) {
+                showMessage("message.address_required", "message.title.error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int port = Integer.parseInt(portText);
+                if (port < 1024 || port > 65535) {
+                    showMessage("message.invalid_port", "message.title.error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // 连接服务器 - 现在是非阻塞的
+                game.getMultiPlayer().connectToServer(address, port, playerName);
+                mpWindow.dispose();
+
+            } catch (NumberFormatException ex) {
+                showMessage("message.invalid_port", "message.title.error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelBtn.addActionListener(e -> mpWindow.dispose());
+
+        buttonPanel.add(createBtn);
+        buttonPanel.add(connectBtn);
+        buttonPanel.add(cancelBtn);
+
+        // 组合面板
+        mainPanel.add(rolePanel, BorderLayout.NORTH);
+        mainPanel.add(settingsPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        mpWindow.add(mainPanel);
+        mpWindow.setVisible(true);
+    }
+
+    /**
+     * 显示聊天对话框
+     */
+    public void showChatDialog() {
+        if (game.getGameMode() != 2 || !game.getMultiPlayer().isConnected()) {
+            showMessage("message.not_in_multiplayer", "message.title.info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        JFrame chatWindow = new JFrame(messages.getString("dialog.chat") + " - " + game.getMultiPlayer().getOpponentName());
+        chatWindow.setSize(400, 500);
+        chatWindow.setLocationRelativeTo(null);
+        chatWindow.setResizable(false);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // 聊天显示区域
+        JTextArea chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setLineWrap(true);
+        chatArea.setWrapStyleWord(true);
+        chatArea.setFont(new Font("Dialog", Font.PLAIN, 12));
+        JScrollPane scrollPane = new JScrollPane(chatArea);
+        scrollPane.setPreferredSize(new Dimension(380, 400));
+
+        // 消息输入区域
+        JPanel inputPanel = new JPanel(new BorderLayout(5, 5));
+        JTextField messageField = new JTextField();
+        JButton sendButton = new JButton(messages.getString("button.send"));
+
+        inputPanel.add(messageField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+
+        // 发送消息
+        sendButton.addActionListener(e -> {
+            String message = messageField.getText().trim();
+            if (!message.isEmpty()) {
+                game.getMultiPlayer().sendChatMessage(message);
+                chatArea.append("[" + game.getMultiPlayer().getPlayerName() + "]: " + message + "\n");
+                messageField.setText("");
+            }
+        });
+
+        // 回车发送
+        messageField.addActionListener(e -> sendButton.doClick());
+
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
+
+        chatWindow.add(mainPanel);
+        chatWindow.setVisible(true);
+    }
+
+    /**
+     * 断开多人游戏连接
+     */
+    public void disconnectMultiplayer() {
+        if (game.getGameMode() == 2 && game.getMultiPlayer().isConnected()) {
+            int result = JOptionPane.showConfirmDialog(game,
+                    messages.getString("message.confirm_disconnect"),
+                    messages.getString("message.title.confirm"),
+                    JOptionPane.YES_NO_OPTION);
+
+            if (result == JOptionPane.YES_OPTION) {
+                game.getMultiPlayer().disconnect();
+                game.setGameMode(0); // 回到双人模式
+                updateAiLabel("AI: IDLE");
+            }
+        }
+    }
+
     public void updateAiLabel(String state) {
         if (aiState != null) {
             aiState.setText(state);
 
             // 根据状态改变颜色
-            if (state.contains("Thinking") || state.contains("Working")) {
+            if (state.contains("Thinking") || state.contains("Working") ||
+                    state.contains("Waiting") || state.contains("Connecting")) {
                 aiState.setForeground(Color.RED);
             } else if (state.contains("IDLE")) {
                 aiState.setForeground(Color.GREEN);
             } else if (state.contains("Error")) {
                 aiState.setForeground(Color.ORANGE);
+            } else if (state.contains("Your Turn")) {
+                aiState.setForeground(Color.BLUE);
+            } else if (state.contains("Opponent's Turn")) {
+                aiState.setForeground(Color.GRAY);
             }
 
             // 确保标签可见
@@ -171,7 +393,7 @@ public class GobangGameUI {
      */
     public JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        
+
         // 初始化菜单
         this.fileMenu = new JMenu(messages.getString("menu.file"));
         this.gameMenu = new JMenu(messages.getString("menu.game"));
@@ -189,6 +411,11 @@ public class GobangGameUI {
         JMenuItem newGameItem = new JMenuItem(messages.getString("menu.new_game"));
         JMenuItem aiSettingsItem = new JMenuItem(messages.getString("menu.ai_settings"));
 
+        // 新增：多人游戏菜单项
+        JMenuItem multiplayerItem = new JMenuItem(messages.getString("menu.multiplayer"));
+        JMenuItem chatItem = new JMenuItem(messages.getString("menu.chat"));
+        JMenuItem disconnectItem = new JMenuItem(messages.getString("menu.disconnect"));
+
         // 添加事件监听
         undoItem.addActionListener(e -> undoBtn.doClick());
         restartItem.addActionListener(e -> restartBtn.doClick());
@@ -196,15 +423,28 @@ public class GobangGameUI {
         newGameItem.addActionListener(e -> showGameModeDialog());
         settingItem.addActionListener(e -> showSettingsDialog());
         aboutItem.addActionListener(e -> showAboutDialog());
-        
+
+        // 多人游戏菜单项事件
+        multiplayerItem.addActionListener(e -> {
+            if (game.getGameMode() == 2 && game.getMultiPlayer().isConnected()) {
+                showMessage("message.already_in_multiplayer", "message.title.info", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                showMultiplayerDialog();
+            }
+        });
+
+        chatItem.addActionListener(e -> showChatDialog());
+
+        disconnectItem.addActionListener(e -> disconnectMultiplayer());
+
         aiSettingsItem.addActionListener(e -> {
             if (game.getGameMode() == 1) {
                 showAISettingsDialog(game);
             } else {
-                JOptionPane.showMessageDialog(game, 
-                    messages.getString("message.ai_mode_only"),
-                    messages.getString("message.title.info"),
-                    JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(game,
+                        messages.getString("message.ai_mode_only"),
+                        messages.getString("message.title.info"),
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         });
         
@@ -254,6 +494,9 @@ public class GobangGameUI {
         fileMenu.add(saveItem);
         fileMenu.add(closeItem);
         gameMenu.add(newGameItem);
+        gameMenu.add(multiplayerItem);
+        gameMenu.add(chatItem);
+        gameMenu.add(disconnectItem);
         gameMenu.add(aiSettingsItem);
         gameMenu.addSeparator();
         gameMenu.add(undoItem);
@@ -267,23 +510,23 @@ public class GobangGameUI {
         
         return menuBar;
     }
-    
+
     /**
      * 显示游戏模式选择对话框
      */
     public void showGameModeDialog() {
         JFrame modeWindow = new JFrame(messages.getString("dialog.game_mode"));
-        modeWindow.setSize(400, 300);
+        modeWindow.setSize(400, 350);
         modeWindow.setLocationRelativeTo(null);
         modeWindow.setResizable(false);
-        
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
+
+        JPanel panel = new JPanel(new GridLayout(6, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        
+
         JLabel titleLabel = new JLabel(messages.getString("label.select_mode"), JLabel.CENTER);
         titleLabel.setFont(new Font("宋体", Font.BOLD, 16));
         panel.add(titleLabel);
-        
+
         JButton twoPlayerBtn = new JButton(messages.getString("mode.two_player"));
         twoPlayerBtn.setFont(new Font("宋体", Font.PLAIN, 14));
         twoPlayerBtn.addActionListener(e -> {
@@ -292,7 +535,7 @@ public class GobangGameUI {
             modeWindow.dispose();
         });
         panel.add(twoPlayerBtn);
-        
+
         JButton aiModeBtn = new JButton(messages.getString("mode.ai"));
         aiModeBtn.setFont(new Font("宋体", Font.PLAIN, 14));
         aiModeBtn.addActionListener(e -> {
@@ -300,7 +543,16 @@ public class GobangGameUI {
             showAISettingsDialog(modeWindow);
         });
         panel.add(aiModeBtn);
-        
+
+        // 新增：多人游戏按钮
+        JButton multiplayerBtn = new JButton(messages.getString("mode.multiplayer"));
+        multiplayerBtn.setFont(new Font("宋体", Font.PLAIN, 14));
+        multiplayerBtn.addActionListener(e -> {
+            modeWindow.dispose();
+            showMultiplayerDialog();
+        });
+        panel.add(multiplayerBtn);
+
         modeWindow.add(panel);
         modeWindow.setVisible(true);
     }
@@ -418,7 +670,7 @@ public class GobangGameUI {
                 case 2:
                 default: newLocale = Locale.of("en", "US"); break;
             }
-            
+
             setLanguage(newLocale);
             updateUILanguage();
             
