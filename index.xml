@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<files>
+    <file name="build.xml" source="original">
+        <mtime>1765793124</mtime>
+        <size>2609</size>
+        <md5>757ee6a1e8fc57f5bdd79091924a77e5</md5>
+        <crc32>da7b06df</crc32>
+        <sha1>40f896fea49ce0cc64ac8d984481b4a258a5fb28</sha1>
+        <format>XML File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="pom.xml" source="original">
+        <mtime>1766542664</mtime>
+        <size>4325</size>
+        <md5>7623eba70b4781d8ffef23e313c4d832</md5>
+        <crc32>cea8bbce</crc32>
+        <sha1>b0291a4637e55447e04054a5c083508faefdd9ab</sha1>
+        <format>XML File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="README.MD" source="original">
+        <mtime>1766458384</mtime>
+        <size>2616</size>
+        <md5>6f2912712d6295f6d36a5a888128654f</md5>
+        <crc32>3cfb7fa5</crc32>
+        <sha1>d2be5d470047c37c70871fa05148559b8fa1535b</sha1>
+        <format>Markdown</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="LICENCE" source="original">
+        <mtime>1765793124</mtime>
+        <size>1068</size>
+        <md5>f64ad740c78cc553787b4c3cff31529b</md5>
+        <crc32>ca8a5b5f</crc32>
+        <sha1>8a5897f996dd2f50f61381804bab74b66237c574</sha1>
+        <format>Unknown</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_en_US.properties" source="original">
+        <mtime>1766538106</mtime>
+        <size>5087</size>
+        <md5>6d5adcf6c11778b32d82c7e877c70099</md5>
+        <crc32>5d9236ea</crc32>
+        <sha1>89fafea79a5bee5747b5c4cba6ec0cf7b631a56e</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_zh_TW.properties" source="original">
+        <mtime>1766538116</mtime>
+        <size>6679</size>
+        <md5>5f7c72c0dea8218d83cf24acf2cde144</md5>
+        <crc32>a534a466</crc32>
+        <sha1>86448db893de8164b8a1fbeeee40334558337549</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_de_DE.properties" source="original">
+        <mtime>1766538122</mtime>
+        <size>5737</size>
+        <md5>8fa2a8690f680ce2e866154c2444c32f</md5>
+        <crc32>d464a02b</crc32>
+        <sha1>b4399624c8de5b934493eeb2f52688c8f9cd5138</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_ko_KP.properties" source="original">
+        <mtime>1766538132</mtime>
+        <size>8006</size>
+        <md5>55cbe1bdccc17b4dae38973c8208c656</md5>
+        <crc32>063bb773</crc32>
+        <sha1>91af02720def003b0f6e176fe5685ae55939f87b</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_zh_CN.properties" source="original">
+        <mtime>1766538112</mtime>
+        <size>6684</size>
+        <md5>5994c2c31a2c9a8dd3a1b4e9b3d9cd6d</md5>
+        <crc32>f0ca2b82</crc32>
+        <sha1>3afa48f2192c957bf69209a1f891699347cd0683</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="messages_ko_KR.properties" source="original">
+        <mtime>1766538127</mtime>
+        <size>8006</size>
+        <md5>d4cea3f4aa578cee7bed729ccf22f25f</md5>
+        <crc32>590a2947</crc32>
+        <sha1>28cd80d5e29a2c4fa81f5f99ac6fd1825f4a181d</sha1>
+        <format>Properties File</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GameSave.java" source="original">
+        <mtime>1766125276</mtime>
+        <size>1608</size>
+        <md5>7d7b1ed8cef900738a52837c9735f182</md5>
+        <crc32>2e8668d5</crc32>
+        <sha1>6e271a5f7c4387154292a3ad5be3634f64730dea</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GobangGameAi.java" source="original">
+        <mtime>1765793124</mtime>
+        <size>14981</size>
+        <md5>b8f21d1bc2e9df43c9e9e466a559e8c8</md5>
+        <crc32>28f7b3cd</crc32>
+        <sha1>bd3c10e3c064fe6f530bbe47a6d93aa3010e6780</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="ChessboardPanel.java" source="original">
+        <mtime>1766496324</mtime>
+        <size>5171</size>
+        <md5>610a5f60c24617a4f92c5c07d3742b0b</md5>
+        <crc32>b46bf641</crc32>
+        <sha1>b45a19e738a9c8e9e0fc2aa4d70e5a92f407f577</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GobangGameHandler.java" source="original">
+        <mtime>1766198643</mtime>
+        <size>5567</size>
+        <md5>c1ee2b9b28b74931d64801ad0c2fa833</md5>
+        <crc32>4bf983dc</crc32>
+        <sha1>88bd8be61e491ba10a2e55e05090b896bc6f3c0f</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GobangGame.java" source="original">
+        <mtime>1766496565</mtime>
+        <size>8843</size>
+        <md5>a979f7055120d9f80083be27cd313231</md5>
+        <crc32>0882ec6a</crc32>
+        <sha1>deef5b67c8df427ddfb88d7f5c4176cdcff04e21</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GobangGameUI.java" source="original">
+        <mtime>1766538099</mtime>
+        <size>31510</size>
+        <md5>5ae4448f515f2205cacdf62a6c0fdd63</md5>
+        <crc32>81529880</crc32>
+        <sha1>f44ebb80ee92fe8511d3ce11c4f3c996727856be</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+    <file name="GobangGameMultiPlayer.java" source="original">
+        <mtime>1766538076</mtime>
+        <size>17248</size>
+        <md5>4c755ab0da16b6efe78c72e23c9be5c6</md5>
+        <crc32>4fa48249</crc32>
+        <sha1>a51507b5c50761f66966d19866b1066a1f056dd8</sha1>
+        <format>Java Source</format>
+        <rotation>0</rotation>
+    </file>
+</files>
