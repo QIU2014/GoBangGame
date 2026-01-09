@@ -26,12 +26,11 @@ Please consider donating a star if you liked it
 - English (US)
 - Korean (~~North Korea~~)
 - Korean (South Korea)
-- German
+- German (Germany)
+### Misc Languages
+- Na'vi (Pandora)
 
 Supports Game saving and Game opening
-
-## Notes
-- Korean may be removed in a future build
 
 ## Executable
 Windows executable built by Launch4j-maven-plugin

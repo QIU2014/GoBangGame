@@ -641,7 +641,8 @@ public class GobangGameUI {
         String[] languageOptions = {
             messages.getString("language.chinese_simple"), messages.getString("language.chinese_traditional"), 
             messages.getString("language.english"), messages.getString("language.german"),
-            messages.getString("language.korean_north_korea"), messages.getString("language.korean_south_korea")
+            messages.getString("language.korean_north_korea"), messages.getString("language.korean_south_korea"),
+            messages.getString("language.navi")
         };
         
         languageComboBox = new JComboBox<>(languageOptions);
@@ -655,6 +656,8 @@ public class GobangGameUI {
             selectedIndex = 3;
         } else if (currentLocale.getLanguage().equals("ko")) {
             selectedIndex = currentLocale.getCountry().equals("KP") ? 4 : 5;
+        } else if (currentLocale.getLanguage().equals("nv")) {
+            selectedIndex = 6;
         }
         languageComboBox.setSelectedIndex(selectedIndex);
         
@@ -667,6 +670,7 @@ public class GobangGameUI {
                 case 3: newLocale = Locale.of("de", "DE"); break;
                 case 4: newLocale = Locale.of("ko", "KP"); break;
                 case 5: newLocale = Locale.of("ko", "KR"); break;
+                case 6: newLocale = Locale.of("ni", "PD"); break;
                 case 2:
                 default: newLocale = Locale.of("en", "US"); break;
             }
@@ -679,8 +683,8 @@ public class GobangGameUI {
         });
         
         settingPanel.add(languageComboBox);
-        settingPanel.add(new JLabel()); // 占位符
-        settingPanel.add(new JLabel()); // 占位符
+        settingPanel.add(new JLabel());
+        settingPanel.add(new JLabel());
         
         settingsWindow.add(settingPanel);
         settingsWindow.setVisible(true);
