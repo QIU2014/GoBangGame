@@ -13,6 +13,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+  <licenses>
+    <license>
+      <name>MIT</name>
+    </license>
+  </licenses>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
@@ -132,6 +137,92 @@
           </execution>
         </executions>
       </plugin>
+      <!-- IMPORTANT: NEVER ENABLE THIS IN MACOS/WINDOWS -->
+      <!--<plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rpm-maven-plugin</artifactId>
+        <version>2.2.0</version>
+        <executions>
+          <execution>
+            <id>generate-rpm</id>
+            <goals>
+              <goal>rpm</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <name>${project.artifactId}</name>
+          <version>${project.version}</version>
+          <release>1</release>
+          <group>Applications/Java</group>
+          <license>MIT</license>
+          <distribution>QiuEricHanru</distribution>
+          <vendor>QiuEricHanru</vendor>
+          <packager>${project.organization.name}</packager>
+          <url>${project.url}</url>
+          <description>${project.description}</description>
+          <requires>
+            <require>java-21-openjdk</require>
+            <require>bash</require>
+          </requires>
+          <mappings>
+            <mapping>
+              <directory>/opt/${project.artifactId}/lib</directory>
+              <filemode>755</filemode>
+              <username>root</username>
+              <groupname>root</groupname>
+              <sources>
+                <source>
+                  <location>${project.build.directory}/${project.build.finalName}.jar</location>
+                </source>
+              </sources>
+            </mapping>
+            <mapping>
+              <directory>/opt/${project.artifactId}/lib</directory>
+              <filemode>755</filemode>
+              <username>root</username>
+              <groupname>root</groupname>
+              <dependency/>
+            </mapping>
+            <mapping>
+              <directory>/usr/bin</directory>
+              <filemode>755</filemode>
+              <username>root</username>
+              <groupname>root</groupname>
+              <sources>
+                <source>
+                  <location>${basedir}/src/main/scripts/${project.artifactId}</location>
+                </source>
+              </sources>
+            </mapping>
+            <mapping>
+              <directory>/usr/share/applications</directory>
+              <filemode>644</filemode>
+              <username>root</username>
+              <groupname>root</groupname>
+              <sources>
+                <source>
+                  <location>${basedir}/src/main/desktop/${project.artifactId}.desktop</location>
+                </source>
+              </sources>
+            </mapping>
+          </mappings>
+          <preinstallScriptlet>
+            <script>echo "Installing ${project.artifactId}..."</script>
+          </preinstallScriptlet>
+
+          <postinstallScriptlet>
+            <script>
+              ln -sf /opt/${project.artifactId}/lib/${project.build.finalName}.jar /usr/local/bin/${project.artifactId}.jar || true
+            </script>
+          </postinstallScriptlet>
+
+          <preremoveScriptlet>
+            <script>echo "Removing ${project.artifactId}..."</script>
+          </preremoveScriptlet>
+        </configuration>
+      </plugin>-->
     </plugins>
     <finalName>GobangGame</finalName>
   </build>

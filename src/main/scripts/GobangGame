@@ -1,0 +1,19 @@
+#!/bin/bash
+APP_NAME="GobangGame"
+APP_DIR="/opt/GobangGame"
+JAR_NAME="GobangGame.jar"
+JAVA_OPTS="-Xmx512m -Djava.awt.headless=false"
+
+# Check for Java
+if type -p java >/dev/null 2>&1; then
+    JAVA_CMD=java
+elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]]; then
+    JAVA_CMD="$JAVA_HOME/bin/java"
+else
+    echo "Java not found. Please install Java 21 or higher."
+    exit 1
+fi
+
+# Run the application
+cd "$APP_DIR"
+exec "$JAVA_CMD" $JAVA_OPTS -jar "lib/$JAR_NAME" "$@"
