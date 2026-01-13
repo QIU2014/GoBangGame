@@ -7,8 +7,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
+
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.GHRelease;
+import org.kohsuke.github.GHRepository;
 
 /**
  * 负责构建和管理所有用户界面元素（菜单、按钮、对话框）
@@ -24,11 +29,25 @@ public class GobangGameUI {
     private JButton undoBtn, restartBtn, closeBtn, loadBtn, saveBtn;
     private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
     private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
-    private JLabel aiState;
+    private JLabel aiState, version;
 
     public GobangGameUI(GobangGame game, Locale initialLocale) {
         this.game = game;
         setLanguage(initialLocale);
+    }
+
+    public double GetLatestVer() {
+        GHRelease release;
+        try {
+            GitHub github = new GitHubBuilder().withOAuthToken("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").build();
+            GHRepository repo = github.getRepository("QIU2014/GobangGame");
+            release = repo.getLatestRelease();
+            double latestVer = Double.parseDouble(String.format("%s", release.getTagName()).replace("GobangGame_v", ""));
+            return latestVer;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
     }
 
     public ResourceBundle getMessages() {
@@ -90,19 +109,32 @@ public class GobangGameUI {
         // 回到原来的FlowLayout，但减少垂直间距
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
         buttonPanel.setPreferredSize(new Dimension(game.getBUTTON_WIDTH(), game.getHeight()));
-        try {
-            this.saveBtn = new JButton(messages.getString("button.save"));
-            this.loadBtn = new JButton(messages.getString("button.load"));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("Falling back to hard-coded text");
-            this.saveBtn = new JButton("Save");
-            this.loadBtn = new JButton("Open");
-        }
+        this.saveBtn = new JButton(messages.getString("button.save"));
+        this.loadBtn = new JButton(messages.getString("button.load"));
         this.undoBtn = new JButton(messages.getString("button.undo"));
         this.restartBtn = new JButton(messages.getString("button.restart"));
         this.closeBtn = new JButton(messages.getString("button.exit"));
+
         this.aiState = new JLabel("AI: IDLE", SwingConstants.CENTER);
+        try {
+            if (GetLatestVer() > GobangGame.VERSION) {
+                this.version = new JLabel(messages.getString("version.update") + "v" + GetLatestVer(), SwingConstants.CENTER);
+                version.setForeground(Color.RED);
+            } else {
+                this.version = new JLabel("Version" + GobangGame.VERSION, SwingConstants.CENTER);
+                version.setForeground(Color.GREEN);
+            }
+        } catch (MissingResourceException e) {
+            e.printStackTrace();
+            System.out.println("Missing resource! Falling back to hard-coded");
+            if (GetLatestVer() > GobangGame.VERSION) {
+                this.version = new JLabel("Update detected: " + "v" + GetLatestVer(), SwingConstants.CENTER);
+                version.setForeground(Color.RED);
+            } else {
+                this.version = new JLabel("GobangGame v" + GobangGame.VERSION, SwingConstants.CENTER);
+                version.setForeground(Color.GREEN);
+            }
+        }
 
         Dimension btnSize = new Dimension(game.getBUTTON_WIDTH(), game.getBUTTON_HEIGHT());
 
@@ -120,6 +152,7 @@ public class GobangGameUI {
         restartBtn.setFont(font);
         closeBtn.setFont(font);
         aiState.setFont(font);
+        version.setFont(font);
 
         // 设置AI标签样式
         aiState.setForeground(Color.BLUE);
@@ -145,6 +178,12 @@ public class GobangGameUI {
 
         // 添加AI标签
         buttonPanel.add(aiState);
+
+        JSeparator separator_1 = new JSeparator(SwingConstants.HORIZONTAL);
+        separator_1.setPreferredSize(new Dimension(game.getBUTTON_WIDTH() - 20, 2));
+        buttonPanel.add(separator_1);
+
+        buttonPanel.add(version);
 
         return buttonPanel;
     }

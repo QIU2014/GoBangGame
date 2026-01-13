@@ -6,13 +6,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * 五子棋游戏主类 - 协调器
  * 职责：管理游戏状态，协调 UI、Handler 和 AI 的交互
  */
 public class GobangGame extends JFrame{
+
+    public static final double VERSION = 2.0;
     
     // --- 棋盘常量 (仍保留在主类中，因为其他组件需要访问它们来确定尺寸) ---
     public static final int ROW = 15;
