@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public class GobangGame extends JFrame{
 
-    public static final double VERSION = 2.0;
+    public static final double VERSION = 2.1;
     
     // --- 棋盘常量 (仍保留在主类中，因为其他组件需要访问它们来确定尺寸) ---
     public static final int ROW = 15;

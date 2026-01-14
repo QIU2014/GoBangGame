@@ -10,10 +10,13 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.kohsuke.github.GHRelease;
 import org.kohsuke.github.GHRepository;
+
 
 /**
  * 负责构建和管理所有用户界面元素（菜单、按钮、对话框）
@@ -26,7 +29,7 @@ public class GobangGameUI {
     private JComboBox<String> languageComboBox;
 
     // UI组件引用 (由GobangGame持有)
-    private JButton undoBtn, restartBtn, closeBtn, loadBtn, saveBtn;
+    private JButton undoBtn, restartBtn, closeBtn, loadBtn, saveBtn, updateBtn;
     private JMenuItem openItem, saveItem, closeItem, undoItem, restartItem, settingItem, aboutItem;
     private JMenu fileMenu, gameMenu, toolsMenu, aboutMenu;
     private JLabel aiState, version;
@@ -37,17 +40,25 @@ public class GobangGameUI {
     }
 
     public double GetLatestVer() {
-        GHRelease release;
-        try {
-            GitHub github = new GitHubBuilder().withOAuthToken("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").build();
-            GHRepository repo = github.getRepository("QIU2014/GobangGame");
-            release = repo.getLatestRelease();
-            double latestVer = Double.parseDouble(String.format("%s", release.getTagName()).replace("GobangGame_v", ""));
-            return latestVer;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0.0;
-        }
+                try {
+                    GitHub github = new GitHubBuilder().withOAuthToken("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").build();
+                    GHRepository repo = github.getRepository("QIU2014/GobangGame");
+                    GHRelease release = repo.getLatestRelease();
+                    double latestVer = Double.parseDouble(String.format("%s", release.getTagName()).replace("GoBangGame_v", ""));
+                    return latestVer;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return 0.0;
+                }
+    }
+
+    public String GetUpdateDownloadURI() throws IOException, URISyntaxException {
+        GitHub github = new GitHubBuilder().withOAuthToken("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").build();
+        GHRepository repo = github.getRepository("QIU2014/GobangGame");
+        GHRelease release = repo.getLatestRelease();
+        String updateDownloadURI = String.format("https://github.com/QIU2014/GoBangGame/releases/tag/%s",  release.getTagName());
+        System.out.println(updateDownloadURI);
+        return updateDownloadURI;
     }
 
     public ResourceBundle getMessages() {
@@ -109,6 +120,7 @@ public class GobangGameUI {
         // 回到原来的FlowLayout，但减少垂直间距
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
         buttonPanel.setPreferredSize(new Dimension(game.getBUTTON_WIDTH(), game.getHeight()));
+        this.updateBtn = new JButton("Update");
         this.saveBtn = new JButton(messages.getString("button.save"));
         this.loadBtn = new JButton(messages.getString("button.load"));
         this.undoBtn = new JButton(messages.getString("button.undo"));
@@ -117,13 +129,62 @@ public class GobangGameUI {
 
         this.aiState = new JLabel("AI: IDLE", SwingConstants.CENTER);
         try {
-            if (GetLatestVer() > GobangGame.VERSION) {
-                this.version = new JLabel(messages.getString("version.update") + "v" + GetLatestVer(), SwingConstants.CENTER);
-                version.setForeground(Color.RED);
-            } else {
-                this.version = new JLabel("Version" + GobangGame.VERSION, SwingConstants.CENTER);
-                version.setForeground(Color.GREEN);
-            }
+            // Initialize with "Please wait..."
+            this.version = new JLabel("Please wait...", SwingConstants.CENTER);
+            version.setForeground(Color.GRAY);
+
+            SwingWorker<Double, Void> versionWorker = new SwingWorker<Double, Void>() {
+                @Override
+                protected Double doInBackground() throws Exception {
+                    return GetLatestVer();
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        double latestVer = get(); // This gets the result from doInBackground()
+
+                        try {
+                            if (latestVer > GobangGame.VERSION) {
+                                version.setText(messages.getString("version.update") + "v" + latestVer);
+                                version.setForeground(Color.RED);
+                                updateBtn.addActionListener(e -> {
+                                    try {
+                                        Desktop.getDesktop().browse(new URI(GetUpdateDownloadURI()));
+                                        JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "A browser window opened to the download page!");
+                                    } catch (IOException | URISyntaxException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                });
+                            } else {
+                                version.setText("Version " + GobangGame.VERSION);
+                                version.setForeground(Color.GREEN);
+                                updateBtn.addActionListener(e -> {
+                                    JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "There are no updates Yet!", "No Update Yet!", JOptionPane.INFORMATION_MESSAGE);
+                                });
+                            }
+                        } catch (MissingResourceException e) {
+                            e.printStackTrace();
+                            System.out.println("Missing resource! Falling back to hard-coded");
+                            if (latestVer > GobangGame.VERSION) {
+                                version.setText("Update detected: v" + latestVer);
+                                version.setForeground(Color.RED);
+                            } else {
+                                version.setText("GobangGame v" + GobangGame.VERSION);
+                                version.setForeground(Color.GREEN);
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        version.setText("Error checking version");
+                        version.setForeground(Color.ORANGE);
+                        updateBtn.disable();
+                    }
+                }
+            };
+
+            versionWorker.execute();
         } catch (MissingResourceException e) {
             e.printStackTrace();
             System.out.println("Missing resource! Falling back to hard-coded");
@@ -139,6 +200,7 @@ public class GobangGameUI {
         Dimension btnSize = new Dimension(game.getBUTTON_WIDTH(), game.getBUTTON_HEIGHT());
 
         // 设置按钮属性
+        updateBtn.setPreferredSize(btnSize);
         saveBtn.setPreferredSize(btnSize);
         loadBtn.setPreferredSize(btnSize);
         undoBtn.setPreferredSize(btnSize);
@@ -146,6 +208,7 @@ public class GobangGameUI {
         closeBtn.setPreferredSize(btnSize);
 
         Font font = new Font("宋体", Font.PLAIN, 14);
+        updateBtn.setFont(font);
         saveBtn.setFont(font);
         loadBtn.setFont(font);
         undoBtn.setFont(font);
@@ -165,6 +228,7 @@ public class GobangGameUI {
         closeBtn.addActionListener(e -> System.exit(0));
 
         // 直接添加组件到buttonPanel
+        buttonPanel.add(updateBtn);
         buttonPanel.add(saveBtn);
         buttonPanel.add(loadBtn);
         buttonPanel.add(undoBtn);

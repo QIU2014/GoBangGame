@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.eric</groupId>
   <artifactId>GobangGame</artifactId>
-  <version>0</version>
+  <version>2.1</version>
   <inceptionYear>2025</inceptionYear>
   <organization>
     <name>Qiuerichanru</name>
@@ -232,5 +232,11 @@
       <artifactId>github-api</artifactId>
       <version>1.319</version>
     </dependency>
+      <dependency>
+          <groupId>org.jetbrains</groupId>
+          <artifactId>annotations</artifactId>
+          <version>26.0.2</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
 </project>
