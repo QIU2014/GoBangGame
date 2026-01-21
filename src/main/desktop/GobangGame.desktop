@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=GobangGame
+Comment=GobangGame
+Exec=/usr/bin/GobangGame
+Icon=/usr/share/icons/GobangGame.png
+Terminal=false
+Type=Application
+Categories=Application;Development;Java;
+StartupWMClass=gobanggame-main-class
