@@ -53,7 +53,6 @@ public class GobangGameAi {
                 }
             }
         }
-        
         if (emptyCells.isEmpty()) {
             return new int[]{-1, -1}; // 棋盘已满
         }

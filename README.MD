@@ -46,11 +46,6 @@ Navigate to cloned directory (cd GoBangGame), execute:
 ```bash
 mvn clean build
 ```
-or, if you don't want all executables
-```bash
-ant
-```
-for the jar only
 
 ## Star History
 
